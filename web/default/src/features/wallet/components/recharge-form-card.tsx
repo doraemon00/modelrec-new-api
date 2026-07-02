@@ -137,7 +137,7 @@ export function RechargeFormCard({
   }
 
   const handleCustomAmountChange = (value: string) => {
-    const { valid, sanitized, numValue } = validateAmountInput(value)
+    const { valid, sanitized, numValue } = validateIntegerInput(value)
     setCustomAmount(sanitized)
     if (!valid) {
       onTopupAmountChange(0)
@@ -183,9 +183,41 @@ export function RechargeFormCard({
     return { valid, sanitized, numValue }
   }
 
+  /**
+   * Validate input value for the custom amount field.
+   * Rules:
+   * - Only allow positive integers (no negative sign, no decimal point)
+   * - Reject empty or invalid values
+   */
+  const validateIntegerInput = (
+    value: string
+  ): { valid: boolean; sanitized: string; numValue: number } => {
+    let sanitized = value
+
+    // Block negative sign and decimal point completely
+    if (sanitized.includes('-') || sanitized.includes('.')) {
+      return { valid: false, sanitized: '', numValue: NaN }
+    }
+
+    // Only allow digits
+    if (!/^\d*$/.test(sanitized)) {
+      return { valid: false, sanitized: '', numValue: NaN }
+    }
+
+    // Remove leading zeros
+    if (/^0\d/.test(sanitized)) {
+      sanitized = sanitized.replace(/^0+/, '')
+    }
+
+    const numValue = parseInt(sanitized, 10)
+    const valid = !isNaN(numValue) && numValue > 0 && sanitized.length > 0
+
+    return { valid, sanitized, numValue }
+  }
+
   const isCustomAmountValid = (): boolean => {
     if (!customAmount.trim()) return false
-    const numValue = parseFloat(customAmount)
+    const numValue = parseInt(customAmount, 10)
     return !isNaN(numValue) && numValue > 0
   }
 
@@ -194,7 +226,7 @@ export function RechargeFormCard({
     onSelectPreset({ value: -1, discount: 1, name: 'Custom', icon: '', type: '' } as PresetAmount)
     // Sync custom amount to main amount when switching to custom mode
     if (isCustomAmountValid()) {
-      onTopupAmountChange(parseFloat(customAmount))
+      onTopupAmountChange(parseInt(customAmount, 10))
     }
     // Auto focus the custom amount input
     setTimeout(() => customInputRef.current?.focus(), 0)
@@ -628,9 +660,9 @@ export function RechargeFormCard({
                   <Input
                     ref={customInputRef}
                     id='custom-topup-amount'
-                    type='number'
-                    step='0.01'
-                    min={0.01}
+                    type='text'
+                    inputMode='numeric'
+                    min={1}
                     value={customAmount}
                     onChange={(e) => {
                       handleCustomAmountChange(e.target.value)
