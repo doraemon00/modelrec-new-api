@@ -12,7 +12,7 @@ import (
 // VerifySMSCode 调用微服务验证短信验证码
 // 返回 true 表示验证成功，error 包含详细错误信息
 func VerifySMSCode(phone string, code string) (bool, error) {
-	url := SMSAuthBaseURL + "/api/auth/sms/verify"
+	url := ModelHubBaseURL + "/api/v2/auth/sms/verify"
 
 	body, _ := json.Marshal(map[string]string{
 		"phone_number": phone,
@@ -45,15 +45,15 @@ func VerifySMSCode(phone string, code string) (bool, error) {
 	// 记录微服务完整响应，用于调试
 	SysLog(fmt.Sprintf("SMS verify response: %s", string(respBody)))
 
-	// 响应格式: {"code": 0, "message": "ok", "data": {"success": true, "message": "验证成功"}}
-	if data, ok := result["data"].(map[string]interface{}); ok {
-		if success, ok := data["success"].(bool); ok && success {
-			return true, nil
-		}
-		// 返回验证失败的具体原因（透传微服务错误信息）
-		if msg, ok := data["message"].(string); ok && msg != "" {
-			return false, fmt.Errorf("%s", msg)
-		}
+	// 响应格式: {"code": 0, "message": "ok", "data": {"message": "验证成功"}}
+	// code == 0 表示微服务处理成功
+	if code, ok := result["code"].(float64); ok && code == 0 {
+		return true, nil
+	}
+
+	// 验证失败，返回错误信息（透传微服务错误信息）
+	if msg, ok := result["message"].(string); ok && msg != "" {
+		return false, fmt.Errorf("%s", msg)
 	}
 
 	return false, fmt.Errorf("验证失败")
