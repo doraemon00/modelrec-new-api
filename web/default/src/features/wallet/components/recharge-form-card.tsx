@@ -41,6 +41,7 @@ import {
   getMinTopupAmount,
   calculatePresetPricing,
 } from '../lib'
+import { PAYMENT_TYPES } from '../constants'
 import type {
   PaymentMethod,
   PresetAmount,
@@ -78,6 +79,8 @@ interface RechargeFormCardProps {
   waffoMinTopup?: number
   onWaffoMethodSelect?: (method: WaffoPayMethod, index: number) => void
   enableWaffoPancakeTopup?: boolean
+  onPayNow?: () => void
+  payNowLoading?: boolean
 }
 
 export function RechargeFormCard({
@@ -108,6 +111,8 @@ export function RechargeFormCard({
   waffoMinTopup,
   onWaffoMethodSelect,
   enableWaffoPancakeTopup,
+  onPayNow,
+  payNowLoading,
 }: RechargeFormCardProps) {
   const { t } = useTranslation()
   const [localAmount, setLocalAmount] = useState(topupAmount.toString())
@@ -207,8 +212,22 @@ export function RechargeFormCard({
     enableWaffoTopup ||
     enableWaffoPancakeTopup
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
-  const hasStandardPaymentMethods =
-    Array.isArray(topupInfo?.pay_methods) && topupInfo.pay_methods.length > 0
+  const basePaymentMethods = topupInfo?.pay_methods ?? []
+  const hasAlipayMethod = basePaymentMethods.some(
+    (m) => m.type === PAYMENT_TYPES.ALIPAY
+  )
+  // Ensure Alipay is always available as a payment method.
+  const paymentMethods = hasAlipayMethod
+    ? basePaymentMethods
+    : [
+        ...basePaymentMethods,
+        {
+          name: t('Alipay'),
+          type: PAYMENT_TYPES.ALIPAY,
+          icon: '',
+        } as PaymentMethod,
+      ]
+  const hasStandardPaymentMethods = paymentMethods.length > 0
   const hasWaffoPaymentMethods =
     Array.isArray(waffoPayMethods) && waffoPayMethods.length > 0
   const minTopup = getMinTopupAmount(topupInfo)
@@ -387,7 +406,7 @@ export function RechargeFormCard({
                 </Label>
                 {hasStandardPaymentMethods ? (
                   <div className='grid grid-cols-2 gap-1.5 sm:gap-3 lg:grid-cols-3'>
-                    {topupInfo?.pay_methods?.map((method) => {
+                    {paymentMethods.map((method) => {
                       const minTopup = method.min_topup || 0
                       const disabled = minTopup > topupAmount
                       const disabledReason = disabled
@@ -659,10 +678,17 @@ export function RechargeFormCard({
           {/* Pay button */}
           <Button
             size='lg'
-            disabled={topupAmount <= 0 || !!paymentLoading || (isCustomAmountSelected && !isCustomAmountValid())}
+            disabled={
+              (!isCustomAmountSelected && selectedPreset === null) ||
+              topupAmount <= 0 ||
+              !!paymentLoading ||
+              !!payNowLoading ||
+              (isCustomAmountSelected && !isCustomAmountValid())
+            }
+            onClick={onPayNow}
             className='w-full h-12 text-base font-semibold'
           >
-            {paymentLoading && <Loader2 className='mr-2 h-5 w-5 animate-spin' />}
+            {payNowLoading && <Loader2 className='mr-2 h-5 w-5 animate-spin' />}
             {t('Pay Now')}
           </Button>
         </div>
