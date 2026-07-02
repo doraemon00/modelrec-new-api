@@ -52,9 +52,7 @@ export function AlipayPaymentDialog({ open, onFinish }: AlipayPaymentDialogProps
             {t('Payment in progress')}
           </DialogTitle>
           <DialogDescription>
-            {t(
-              'Please complete the payment in the new tab. This page will refresh once you are done.'
-            )}
+             请在新标签页中完成付款。完成后，刷新此页面。
           </DialogDescription>
         </DialogHeader>
 
@@ -63,11 +61,9 @@ export function AlipayPaymentDialog({ open, onFinish }: AlipayPaymentDialogProps
           <p className='text-muted-foreground text-sm'>{t('Payment in progress')}</p>
         </div>
 
-        <DialogFooter className='grid grid-cols-2 gap-2'>
-          <Button variant='outline' onClick={onFinish}>
-            {t('Payment Cancelled')}
-          </Button>
-          <Button onClick={onFinish}>{t('Payment Completed')}</Button>
+        <DialogFooter className='grid grid-cols-1 gap-0'>
+
+          <Button onClick={onFinish}>确认刷新页面</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
