@@ -38,6 +38,8 @@ import type {
   WaffoPaymentResponse,
   WaffoPancakePaymentRequest,
   WaffoPancakePaymentResponse,
+  AlipayPaymentRequest,
+  AlipayPaymentResponse,
 } from './types'
 
 // ============================================================================
@@ -163,6 +165,22 @@ export async function requestWaffoPancakePayment(
   request: WaffoPancakePaymentRequest
 ): Promise<WaffoPancakePaymentResponse> {
   const res = await api.post('/api/user/waffo-pancake/pay', request, {
+    skipBusinessError: true,
+  } as Record<string, unknown>)
+  return res.data
+}
+
+/**
+ * Request Alipay payment (custom alipay create endpoint)
+ *
+ * The endpoint returns a non-standard envelope { code, meaaage, data } and
+ * is not covered by the global business-error interceptor, so skipBusinessError
+ * must be set.
+ */
+export async function requestAlipayPayment(
+  request: AlipayPaymentRequest
+): Promise<AlipayPaymentResponse> {
+  const res = await api.post('/api/v2/pay/alipay/create', request, {
     skipBusinessError: true,
   } as Record<string, unknown>)
   return res.data

@@ -19,7 +19,7 @@ export default defineConfig(({ envMode }) => {
 
   const isProd = envMode === "production";
   const devProxy = {
-    "/api/v2/auth/sms": { target: smsServiceUrl, changeOrigin: true },
+    "/api/v2": { target: smsServiceUrl, changeOrigin: true },
     ...Object.fromEntries(
       (["/api", "/mj", "/pg"] as const).map((key) => [
         key,

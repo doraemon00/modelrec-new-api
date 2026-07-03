@@ -26,6 +26,7 @@ import { AffiliateRewardsCard } from './components/affiliate-rewards-card'
 import { BillingHistoryDialog } from './components/dialogs/billing-history-dialog'
 import { CreemConfirmDialog } from './components/dialogs/creem-confirm-dialog'
 import { PaymentConfirmDialog } from './components/dialogs/payment-confirm-dialog'
+import { AlipayPaymentDialog } from './components/dialogs/alipay-payment-dialog'
 import { TransferDialog } from './components/dialogs/transfer-dialog'
 import { RechargeFormCard } from './components/recharge-form-card'
 import { SubscriptionPlansCard } from './components/subscription-plans-card'
@@ -39,12 +40,14 @@ import {
   useCreemPayment,
   useWaffoPayment,
   useWaffoPancakePayment,
+  useAlipayPayment,
 } from './hooks'
 import {
   getDefaultPaymentType,
   getMinTopupAmount,
   isWaffoPancakePayment,
 } from './lib'
+import { PAYMENT_TYPES } from './constants'
 import type {
   UserWalletData,
   PaymentMethod,
@@ -73,6 +76,7 @@ export function Wallet(props: WalletProps) {
   const [selectedCreemProduct, setSelectedCreemProduct] =
     useState<CreemProduct | null>(null)
   const [showSubscriptionPanel, setShowSubscriptionPanel] = useState(true)
+  const [alipayModalOpen, setAlipayModalOpen] = useState(false)
 
   const { status } = useStatus()
   const { currency } = useSystemConfig()
@@ -102,6 +106,8 @@ export function Wallet(props: WalletProps) {
   const { processWaffoPayment } = useWaffoPayment()
   const { processing: pancakeProcessing, processWaffoPancakePayment } =
     useWaffoPancakePayment()
+  const { processing: alipayProcessing, processAlipayPayment } =
+    useAlipayPayment()
 
   // Fetch and refresh user data
   const fetchUser = useCallback(async () => {
@@ -181,9 +187,30 @@ export function Wallet(props: WalletProps) {
     }
   }
 
+  // Trigger the Alipay create flow: call the create API first, then open the
+  // payment link in a new tab only on success and show the in-progress overlay.
+  const startAlipayPayment = useCallback(async () => {
+    const data = await processAlipayPayment({
+      amount: topupAmount,
+      subject: t('Account Topup'),
+      userId: user?.id ?? 0,
+    })
+    if (data?.pay_data) {
+      window.open(data.pay_data, '_blank', 'noopener,noreferrer')
+      setAlipayModalOpen(true)
+    }
+  }, [processAlipayPayment, topupAmount, t, user?.id])
+
   // Handle payment confirmation
   const handlePaymentConfirm = async () => {
     if (!selectedPaymentMethod) return
+
+    // Alipay uses a dedicated create endpoint.
+    if (selectedPaymentMethod.type === PAYMENT_TYPES.ALIPAY) {
+      setConfirmDialogOpen(false)
+      await startAlipayPayment()
+      return
+    }
 
     const isPancake = isWaffoPancakePayment(selectedPaymentMethod.type)
     const success = isPancake
@@ -195,6 +222,11 @@ export function Wallet(props: WalletProps) {
       await fetchUser()
     }
   }
+
+  // Handle the "Pay Now" button in the simple amount-card layout
+  const handlePayNow = useCallback(() => {
+    startAlipayPayment()
+  }, [startAlipayPayment])
 
   // Handle redemption
   const handleRedeem = async () => {
@@ -303,6 +335,8 @@ export function Wallet(props: WalletProps) {
                   enableWaffoPancakeTopup={
                     topupInfo?.enable_waffo_pancake_topup
                   }
+                  onPayNow={handlePayNow}
+                  payNowLoading={alipayProcessing}
                 />
               </div>
 
@@ -335,9 +369,14 @@ export function Wallet(props: WalletProps) {
         paymentAmount={paymentAmount}
         paymentMethod={selectedPaymentMethod}
         calculating={calculating}
-        processing={processing || pancakeProcessing}
+        processing={processing || pancakeProcessing || alipayProcessing}
         discountRate={getDiscountRate()}
         usdExchangeRate={effectiveUsdExchangeRate}
+      />
+
+      <AlipayPaymentDialog
+        open={alipayModalOpen}
+        onFinish={() => window.location.reload()}
       />
 
       <TransferDialog

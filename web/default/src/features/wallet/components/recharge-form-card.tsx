@@ -41,6 +41,7 @@ import {
   getMinTopupAmount,
   calculatePresetPricing,
 } from '../lib'
+import { PAYMENT_TYPES } from '../constants'
 import type {
   PaymentMethod,
   PresetAmount,
@@ -78,6 +79,8 @@ interface RechargeFormCardProps {
   waffoMinTopup?: number
   onWaffoMethodSelect?: (method: WaffoPayMethod, index: number) => void
   enableWaffoPancakeTopup?: boolean
+  onPayNow?: () => void
+  payNowLoading?: boolean
 }
 
 export function RechargeFormCard({
@@ -108,6 +111,8 @@ export function RechargeFormCard({
   waffoMinTopup,
   onWaffoMethodSelect,
   enableWaffoPancakeTopup,
+  onPayNow,
+  payNowLoading,
 }: RechargeFormCardProps) {
   const { t } = useTranslation()
   const [localAmount, setLocalAmount] = useState(topupAmount.toString())
@@ -132,7 +137,7 @@ export function RechargeFormCard({
   }
 
   const handleCustomAmountChange = (value: string) => {
-    const { valid, sanitized, numValue } = validateAmountInput(value)
+    const { valid, sanitized, numValue } = validateIntegerInput(value)
     setCustomAmount(sanitized)
     if (!valid) {
       onTopupAmountChange(0)
@@ -178,9 +183,41 @@ export function RechargeFormCard({
     return { valid, sanitized, numValue }
   }
 
+  /**
+   * Validate input value for the custom amount field.
+   * Rules:
+   * - Only allow positive integers (no negative sign, no decimal point)
+   * - Reject empty or invalid values
+   */
+  const validateIntegerInput = (
+    value: string
+  ): { valid: boolean; sanitized: string; numValue: number } => {
+    let sanitized = value
+
+    // Block negative sign and decimal point completely
+    if (sanitized.includes('-') || sanitized.includes('.')) {
+      return { valid: false, sanitized: '', numValue: NaN }
+    }
+
+    // Only allow digits
+    if (!/^\d*$/.test(sanitized)) {
+      return { valid: false, sanitized: '', numValue: NaN }
+    }
+
+    // Remove leading zeros
+    if (/^0\d/.test(sanitized)) {
+      sanitized = sanitized.replace(/^0+/, '')
+    }
+
+    const numValue = parseInt(sanitized, 10)
+    const valid = !isNaN(numValue) && numValue > 0 && sanitized.length > 0
+
+    return { valid, sanitized, numValue }
+  }
+
   const isCustomAmountValid = (): boolean => {
     if (!customAmount.trim()) return false
-    const numValue = parseFloat(customAmount)
+    const numValue = parseInt(customAmount, 10)
     return !isNaN(numValue) && numValue > 0
   }
 
@@ -189,7 +226,7 @@ export function RechargeFormCard({
     onSelectPreset({ value: -1, discount: 1, name: 'Custom', icon: '', type: '' } as PresetAmount)
     // Sync custom amount to main amount when switching to custom mode
     if (isCustomAmountValid()) {
-      onTopupAmountChange(parseFloat(customAmount))
+      onTopupAmountChange(parseInt(customAmount, 10))
     }
     // Auto focus the custom amount input
     setTimeout(() => customInputRef.current?.focus(), 0)
@@ -207,8 +244,22 @@ export function RechargeFormCard({
     enableWaffoTopup ||
     enableWaffoPancakeTopup
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
-  const hasStandardPaymentMethods =
-    Array.isArray(topupInfo?.pay_methods) && topupInfo.pay_methods.length > 0
+  const basePaymentMethods = topupInfo?.pay_methods ?? []
+  const hasAlipayMethod = basePaymentMethods.some(
+    (m) => m.type === PAYMENT_TYPES.ALIPAY
+  )
+  // Ensure Alipay is always available as a payment method.
+  const paymentMethods = hasAlipayMethod
+    ? basePaymentMethods
+    : [
+        ...basePaymentMethods,
+        {
+          name: t('Alipay'),
+          type: PAYMENT_TYPES.ALIPAY,
+          icon: '',
+        } as PaymentMethod,
+      ]
+  const hasStandardPaymentMethods = paymentMethods.length > 0
   const hasWaffoPaymentMethods =
     Array.isArray(waffoPayMethods) && waffoPayMethods.length > 0
   const minTopup = getMinTopupAmount(topupInfo)
@@ -387,7 +438,7 @@ export function RechargeFormCard({
                 </Label>
                 {hasStandardPaymentMethods ? (
                   <div className='grid grid-cols-2 gap-1.5 sm:gap-3 lg:grid-cols-3'>
-                    {topupInfo?.pay_methods?.map((method) => {
+                    {paymentMethods.map((method) => {
                       const minTopup = method.min_topup || 0
                       const disabled = minTopup > topupAmount
                       const disabledReason = disabled
@@ -609,9 +660,9 @@ export function RechargeFormCard({
                   <Input
                     ref={customInputRef}
                     id='custom-topup-amount'
-                    type='number'
-                    step='0.01'
-                    min={0.01}
+                    type='text'
+                    inputMode='numeric'
+                    min={1}
                     value={customAmount}
                     onChange={(e) => {
                       handleCustomAmountChange(e.target.value)
@@ -659,10 +710,17 @@ export function RechargeFormCard({
           {/* Pay button */}
           <Button
             size='lg'
-            disabled={topupAmount <= 0 || !!paymentLoading || (isCustomAmountSelected && !isCustomAmountValid())}
+            disabled={
+              (!isCustomAmountSelected && selectedPreset === null) ||
+              topupAmount <= 0 ||
+              !!paymentLoading ||
+              !!payNowLoading ||
+              (isCustomAmountSelected && !isCustomAmountValid())
+            }
+            onClick={onPayNow}
             className='w-full h-12 text-base font-semibold'
           >
-            {paymentLoading && <Loader2 className='mr-2 h-5 w-5 animate-spin' />}
+            {payNowLoading && <Loader2 className='mr-2 h-5 w-5 animate-spin' />}
             {t('Pay Now')}
           </Button>
         </div>
