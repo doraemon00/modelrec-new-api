@@ -53,7 +53,7 @@ export function LandingPage() {
     <PublicLayout showMainContainer={false}>
       <HeroSection isAuthenticated={isAuthenticated} />
       <FeatureCards />
-      <QuickStartSection />
+      <QuickStartSection isAuthenticated={isAuthenticated} />
       <FAQSection />
       <LandingFooter />
     </PublicLayout>
@@ -101,7 +101,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
                 <Button
                   size='lg'
                   className='h-12 rounded-full px-8 text-sm font-medium sf-btn-primary'
-                  render={<Link to='/sign-up' />}
+                  render={<Link to='/sign-in' />}
                 >
                   {t('Get API Key')}
                 </Button>
@@ -213,7 +213,7 @@ const SETUP_STEPS = [
   },
 ] as const
 
-function QuickStartSection() {
+function QuickStartSection({ isAuthenticated }: { isAuthenticated: boolean }) {
   const { t } = useTranslation()
 
   return (
@@ -254,7 +254,7 @@ function QuickStartSection() {
                 <Button
                   size='lg'
                   className='rounded-full px-8 sf-btn-primary'
-                  render={<Link to='/sign-up' />}
+                  render={<Link to={isAuthenticated ? '/wallet' : '/sign-in'} />}
                 >
                   {t('Get Started')}
                   <ArrowRight className='ml-2 size-4' />
