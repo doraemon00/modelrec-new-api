@@ -69,6 +69,57 @@ export function submitPaymentForm(
 }
 
 /**
+ * Open a blank payment tab synchronously and immediately paint a loading
+ * spinner so the user does not see a bare about:blank page while the API
+ * request is in flight.
+ */
+export function openPaymentWindow(): Window | null {
+  const win = window.open('', '_blank')
+  if (win) {
+    writeLoadingPage(win)
+  }
+  return win
+}
+
+function writeLoadingPage(targetWindow: Window): void {
+  targetWindow.document.write(
+    '<!DOCTYPE html><html><head>' +
+      '<meta charset="utf-8">' +
+      '<title>Redirecting...</title>' +
+      '<style>' +
+      '*{margin:0;padding:0;box-sizing:border-box}' +
+      'body{height:100vh;display:flex;align-items:center;justify-content:center;background:#f5f5f5}' +
+      '.spinner{width:48px;height:48px;border:4px solid #e0e0e0;border-top-color:#3b82f6;border-radius:50%;animation:spin 1s linear infinite}' +
+      '@keyframes spin{to{transform:rotate(360deg)}}' +
+      '</style>' +
+      '</head><body>' +
+      '<div class="spinner"></div>' +
+      '</body></html>'
+  )
+  targetWindow.document.close()
+}
+
+/**
+ * Redirect a pre-opened blank tab to the payment URL.
+ *
+ * Safari only blocks popups created outside the user gesture context; once a
+ * blank tab has been opened synchronously during the gesture, navigating that
+ * existing tab via its location.href is allowed and does not trigger the popup
+ * blocker.  We therefore assign the URL directly to the opened window.
+ */
+export function redirectPaymentWindow(
+  targetWindow: Window | null,
+  url: string
+): void {
+  if (targetWindow) {
+    targetWindow.location.href = url
+  } else {
+    // Fallback: same-tab redirect when the blank tab could not be opened
+    window.location.href = url
+  }
+}
+
+/**
  * Check if payment method is Stripe
  */
 export function isStripePayment(paymentType: string): boolean {

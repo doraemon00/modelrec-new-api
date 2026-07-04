@@ -31,6 +31,8 @@ import {
   isStripePayment,
   isWaffoPancakePayment,
   submitPaymentForm,
+  redirectPaymentWindow,
+  openPaymentWindow,
 } from '../lib'
 
 // ============================================================================
@@ -78,10 +80,16 @@ export function usePayment() {
   // Process payment
   const processPayment = useCallback(
     async (topupAmount: number, paymentType: string) => {
+      const isStripe = isStripePayment(paymentType)
+
       try {
         setProcessing(true)
 
-        const isStripe = isStripePayment(paymentType)
+        // For Stripe: open a blank tab synchronously to preserve the
+        // user-gesture context (so Safari does not block the popup) and
+        // immediately paint a loading spinner while waiting for the API response.
+        const newWindow = isStripe ? openPaymentWindow() : null
+
         const amount = Math.floor(topupAmount)
 
         const response = isStripe
@@ -95,13 +103,14 @@ export function usePayment() {
             })
 
         if (!isApiSuccess(response)) {
+          if (newWindow) newWindow.close()
           toast.error(response.message || i18next.t('Payment request failed'))
           return false
         }
 
         // Handle Stripe payment
         if (isStripe && response.data?.pay_link) {
-          window.open(response.data.pay_link as string, '_blank')
+          redirectPaymentWindow(newWindow, response.data.pay_link as string)
           toast.success(i18next.t('Redirecting to payment page...'))
           return true
         }
