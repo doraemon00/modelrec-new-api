@@ -392,8 +392,8 @@ export function Welcome() {
                 }}
               />
               <h3
-                className="text-lg font-black tracking-[0.28em] sm:text-xl" style={{ fontSize: "1.6rem" }}
-                style={{ color: C.orange, textTransform: "uppercase" }}
+                className="font-black tracking-[0.28em]"
+                style={{ color: C.orange, textTransform: "uppercase", fontSize: "1.6rem" }}
               >
                 关于我们
               </h3>
@@ -436,8 +436,8 @@ export function Welcome() {
                 }}
               />
               <h3
-                className="text-lg font-black tracking-[0.28em] sm:text-xl" style={{ fontSize: "1.6rem" }}
-                style={{ color: C.green, textTransform: "uppercase" }}
+                className="font-black tracking-[0.28em]"
+                style={{ color: C.green, textTransform: "uppercase", fontSize: "1.6rem" }}
               >
                 使命
               </h3>
@@ -479,12 +479,12 @@ export function Welcome() {
                   background: `linear-gradient(90deg,${C.orange},${C.green})`,
                 }}
               />
-              <h3
-                className="text-lg font-black tracking-[0.28em] sm:text-xl" style={{ fontSize: "1.6rem" }}
-                style={{ color: C.orange, textTransform: "uppercase" }}
-              >
-                能力覆盖
-              </h3>
+            <h3
+              className="font-black tracking-[0.28em]"
+              style={{ color: C.orange, textTransform: "uppercase", fontSize: "1.6rem" }}
+            >
+              能力覆盖
+            </h3>
             </div>
 
             <p
@@ -521,8 +521,8 @@ export function Welcome() {
               }}
             />
             <h3
-              className="text-lg font-black tracking-[0.28em] sm:text-xl" style={{ fontSize: "1.6rem" }}
-              style={{ color: C.orange, textTransform: "uppercase" }}
+              className="font-black tracking-[0.28em]"
+              style={{ color: C.orange, textTransform: "uppercase", fontSize: "1.6rem" }}
             >
               核心价值观
             </h3>
