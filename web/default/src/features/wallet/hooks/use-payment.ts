@@ -32,6 +32,7 @@ import {
   isWaffoPancakePayment,
   submitPaymentForm,
   redirectPaymentWindow,
+  openPaymentWindow,
 } from '../lib'
 
 // ============================================================================
@@ -85,9 +86,9 @@ export function usePayment() {
         setProcessing(true)
 
         // For Stripe: open a blank tab synchronously to preserve the
-        // user-gesture context.  The URL is injected via
-        // redirectPaymentWindow after the API call completes.
-        const newWindow = isStripe ? window.open('', '_blank') : null
+        // user-gesture context (so Safari does not block the popup) and
+        // immediately paint a loading spinner while waiting for the API response.
+        const newWindow = isStripe ? openPaymentWindow() : null
 
         const amount = Math.floor(topupAmount)
 
