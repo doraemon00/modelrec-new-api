@@ -2,7 +2,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-kXY7NiE2adr63WgsuSVTHl3GTTB9bB3pC5hJLhlHtcYGuIl0",  # 平台颁发的令牌
-    base_url="http://47.121.128.119/v1"
+    base_url="https://modelrec.net/v1"
 )
 
 # 流式请求
@@ -23,7 +23,7 @@ print()  # 打印完毕，换行
 
 
 """
-curl http://localhost:3000/v1/chat/completions \
+curl https://modelrec.net/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer sk-fohCbrX6gl4LkzPhftbOUgGNtyx0JGBe0rRXZcds8l6Lm3xU" \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"Say hello in one sentence."}]}'
