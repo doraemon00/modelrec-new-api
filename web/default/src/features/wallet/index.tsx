@@ -46,6 +46,7 @@ import {
   getDefaultPaymentType,
   getMinTopupAmount,
   isWaffoPancakePayment,
+  redirectPaymentWindow,
 } from './lib'
 import { PAYMENT_TYPES } from './constants'
 import type {
@@ -187,17 +188,23 @@ export function Wallet(props: WalletProps) {
     }
   }
 
-  // Trigger the Alipay create flow: call the create API first, then open the
-  // payment link in a new tab only on success and show the in-progress overlay.
+  // Trigger the Alipay create flow: open a blank tab synchronously to preserve
+  // the user-gesture context, then inject a self-redirecting page via
+  // redirectPaymentWindow after the API call.  This prevents Safari from
+  // blocking the popup.  NOTE: do NOT pass 'noopener' to window.open – it
+  // would make the return value null and break the blank-tab injection.
   const startAlipayPayment = useCallback(async () => {
+    const newWindow = window.open('', '_blank')
     const data = await processAlipayPayment({
       amount: topupAmount,
       subject: t('Account Topup'),
       userId: user?.id ?? 0,
     })
     if (data?.pay_data) {
-      window.open(data.pay_data, '_blank', 'noopener,noreferrer')
+      redirectPaymentWindow(newWindow, data.pay_data)
       setAlipayModalOpen(true)
+    } else if (newWindow) {
+      newWindow.close()
     }
   }, [processAlipayPayment, topupAmount, t, user?.id])
 

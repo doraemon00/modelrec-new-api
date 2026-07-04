@@ -69,6 +69,26 @@ export function submitPaymentForm(
 }
 
 /**
+ * Redirect a pre-opened blank tab to the payment URL.
+ *
+ * Safari only blocks popups created outside the user gesture context; once a
+ * blank tab has been opened synchronously during the gesture, navigating that
+ * existing tab via its location.href is allowed and does not trigger the popup
+ * blocker.  We therefore assign the URL directly to the opened window.
+ */
+export function redirectPaymentWindow(
+  targetWindow: Window | null,
+  url: string
+): void {
+  if (targetWindow) {
+    targetWindow.location.href = url
+  } else {
+    // Fallback: same-tab redirect when the blank tab could not be opened
+    window.location.href = url
+  }
+}
+
+/**
  * Check if payment method is Stripe
  */
 export function isStripePayment(paymentType: string): boolean {

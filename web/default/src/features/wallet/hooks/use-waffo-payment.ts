@@ -20,6 +20,7 @@ import { useState, useCallback } from 'react'
 import i18next from 'i18next'
 import { toast } from 'sonner'
 import { requestWaffoPayment, isApiSuccess } from '../api'
+import { redirectPaymentWindow } from '../lib'
 
 function getPaymentUrl(data: unknown): string | null {
   if (!data || typeof data !== 'object') {
@@ -51,6 +52,11 @@ export function useWaffoPayment() {
     async (topupAmount: number, payMethodIndex?: number) => {
       setProcessing(true)
 
+      // Open a blank tab synchronously to preserve the user-gesture context,
+      // so Safari does not block the popup.  The URL is injected via
+      // redirectPaymentWindow after the API call completes.
+      const newWindow = window.open('', '_blank')
+
       try {
         const response = await requestWaffoPayment({
           amount: Math.floor(topupAmount),
@@ -61,15 +67,17 @@ export function useWaffoPayment() {
           const paymentUrl = getPaymentUrl(response.data)
 
           if (paymentUrl) {
-            window.open(paymentUrl, '_blank')
+            redirectPaymentWindow(newWindow, paymentUrl)
             toast.success(i18next.t('Redirecting to payment page...'))
             return true
           }
         }
 
+        if (newWindow) newWindow.close()
         toast.error(getErrorMessage(response.message, response.data))
         return false
       } catch (_error) {
+        if (newWindow) newWindow.close()
         toast.error(i18next.t('Payment request failed'))
         return false
       } finally {
