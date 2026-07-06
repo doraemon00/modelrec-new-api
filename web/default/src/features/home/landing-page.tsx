@@ -68,7 +68,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
   const { t } = useTranslation()
 
   return (
-    <section className='relative overflow-hidden px-6 pt-28 pb-16 md:pt-36 md:pb-24'>
+    <section className='relative overflow-hidden px-6 pt-28 pb-16 md:pt-36 md:pb-14'>
       {/* Background gradient - soft lavender glow */}
       <div
         aria-hidden
@@ -80,7 +80,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
           <h1 className='text-[clamp(2.2rem,5vw,3.5rem)] leading-[1.15] font-bold tracking-tight hero-title-gradient'>
             {t('AI Model Recommendation')}
           </h1>
-          <p className='mt-4 text-base text-gray-800 md:text-lg dark:text-gray-200'>
+          <p className='mt-4 text-lg text-gray-800 md:text-xl dark:text-gray-200'>
             {t('Better quality, better understanding')}
           </p>
         </AnimateInView>
@@ -90,7 +90,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
             {isAuthenticated ? (
               <Button
                 size='lg'
-                className='h-12 rounded-full px-8 text-sm font-medium sf-btn-primary'
+                className='h-12 rounded-full px-8 text-base font-medium sf-btn-primary'
                 render={<Link to='/dashboard' />}
               >
                 {t('Go to Dashboard')}
@@ -100,7 +100,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
               <>
                 <Button
                   size='lg'
-                  className='h-12 rounded-full px-8 text-sm font-medium sf-btn-primary'
+                  className='h-12 rounded-full px-8 text-base font-medium sf-btn-primary'
                   render={<Link to='/sign-in' />}
                 >
                   {t('Get API Key')}
@@ -108,7 +108,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
                 <Button
                   variant='outline'
                   size='lg'
-                  className='h-12 rounded-full px-8 text-sm font-medium sf-btn-outline'
+                  className='h-12 rounded-full px-8 text-base font-medium sf-btn-outline'
                   render={<Link to='/pricing' />}
                 >
                   {t('Configure Market')}
@@ -161,19 +161,19 @@ function FeatureCards() {
   const { t } = useTranslation()
 
   return (
-    <section className='relative z-10 px-6 py-16 md:py-24'>
-      <div className='mx-auto grid max-w-5xl gap-6 md:grid-cols-4'>
+    <section className='relative z-10 px-6 py-10 md:py-16'>
+      <div className='mx-auto grid max-w-5xl gap-5 md:grid-cols-4'>
         {FEATURES.map((f, i) => {
           const Icon = f.icon
           return (
             <AnimateInView key={f.titleKey} delay={i * 100} animation='scale-in'>
-              <div className='group border-border/40 bg-background flex flex-col items-center rounded-2xl border p-7 text-center transition-all duration-300 hover:border-violet-500/25 hover:bg-muted/20 hover:shadow-md'>
+              <div className='group border-border/40 bg-background flex flex-col items-center rounded-2xl border p-6 text-center transition-all duration-300 hover:border-violet-500/25 hover:bg-muted/20 hover:shadow-md'>
                 <div
                   className={`mb-4 flex size-14 items-center justify-center rounded-2xl ${f.bgColor}`}
                 >
                   <Icon className={`size-6 ${f.color}`} strokeWidth={1.5} />
                 </div>
-                <h3 className='mb-2 text-sm font-semibold'>
+                <h3 className='mb-2 text-base font-semibold'>
                   {t(f.titleKey)}
                 </h3>
                 <p className='text-muted-foreground leading-relaxed text-xs'>
@@ -217,17 +217,17 @@ function QuickStartSection({ isAuthenticated }: { isAuthenticated: boolean }) {
   const { t } = useTranslation()
 
   return (
-    <section className='relative z-10 border-border/40 bg-muted/20 border-t px-6 py-16 md:py-24'>
+    <section className='relative z-10 border-border/40 bg-muted/20 border-t px-6 py-10 md:py-16'>
       <div className='mx-auto max-w-5xl'>
-        <div className='grid gap-12 lg:grid-cols-[45fr_55fr] lg:gap-16'>
+        <div className='grid gap-8 lg:grid-cols-[45fr_55fr] lg:gap-12'>
           {/* Left: Steps */}
           <div className='flex flex-col justify-center'>
             <AnimateInView animation='fade-right' delay={0}>
-              <h2 className='mb-10 text-2xl font-bold tracking-tight md:text-3xl'>
+              <h2 className='mb-8 text-3xl font-bold tracking-tight md:text-4xl'>
                 {t('setup.title')}
               </h2>
 
-              <div className='space-y-6'>
+              <div className='space-y-5'>
                 {SETUP_STEPS.map((step) => (
                   <div
                     key={step.num}
@@ -239,10 +239,10 @@ function QuickStartSection({ isAuthenticated }: { isAuthenticated: boolean }) {
                       {step.num}
                     </div>
                     <div className='pt-0.5'>
-                      <p className='text-sm font-semibold'>
+                      <p className='text-base font-semibold'>
                         {t(step.titleKey)}
                       </p>
-                      <p className='mt-1 text-muted-foreground text-xs leading-relaxed'>
+                      <p className='mt-1 text-muted-foreground text-sm leading-relaxed'>
                         {t(step.descKey)}
                       </p>
                     </div>
@@ -396,10 +396,10 @@ function FAQSection() {
   const [openItem, setOpenItem] = useState<string | null>(null)
 
   return (
-    <section className='relative z-10 px-6 py-16 md:py-24'>
+    <section className='relative z-10 px-6 py-10 md:py-16'>
       <div className='mx-auto max-w-3xl'>
-        <AnimateInView animation='fade-up' className='mb-10 text-center'>
-          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>
+        <AnimateInView animation='fade-up' className='mb-8 text-center'>
+          <h2 className='text-3xl font-bold tracking-tight md:text-4xl'>
             {t('faq.title')}
           </h2>
         </AnimateInView>
@@ -414,7 +414,7 @@ function FAQSection() {
                 }
               >
                 <div className='border-border/40 overflow-hidden rounded-xl border bg-background transition-colors hover:border-border/60'>
-                  <CollapsibleTrigger className='flex w-full items-center justify-between px-6 py-4 text-left text-sm font-medium transition-colors hover:bg-muted/30'>
+                  <CollapsibleTrigger className='flex w-full items-center justify-between px-6 py-4 text-left text-base font-medium transition-colors hover:bg-muted/30'>
                     <span>Q: {t(item.q)}</span>
                     <ChevronDown
                       className={`text-muted-foreground size-4 shrink-0 transition-transform duration-200 ${
@@ -461,7 +461,7 @@ function LandingFooter() {
 
   return (
     <footer className='border-border/40 relative z-10 border-t bg-muted/20'>
-      <div className='mx-auto max-w-6xl px-6 py-12 md:py-16'>
+      <div className='mx-auto max-w-6xl px-6 py-10 md:py-14'>
         <div className='flex flex-col justify-between gap-10 md:flex-row md:gap-16'>
           {/* Brand column */}
           <div className='shrink-0 max-w-[240px]'>
@@ -473,10 +473,10 @@ function LandingFooter() {
                 燧元路由
               </span>
             </Link>
-            <p className='text-muted-foreground mt-2 mb-1 text-xs font-medium'>
+            <p className='text-muted-foreground mt-2 mb-1 text-sm font-medium'>
               {t('footer.brand.tagline')}
             </p>
-            <p className='text-muted-foreground/60 text-xs leading-relaxed'>
+            <p className='text-muted-foreground/60 text-sm leading-relaxed'>
               {t('footer.brand.description')}
             </p>
           </div>
@@ -559,7 +559,7 @@ function LandingFooter() {
         </div>
 
         {/* Copyright bar */}
-        <div className='border-border/30 mt-10 flex items-center justify-between border-t pt-6 text-xs text-muted-foreground/40'>
+        <div className='border-border/30 mt-8 flex items-center justify-between border-t pt-5 text-xs text-muted-foreground/40'>
           <span>&copy; {currentYear} 燧元路由. {t('footer.copyright')}</span>
         </div>
       </div>
