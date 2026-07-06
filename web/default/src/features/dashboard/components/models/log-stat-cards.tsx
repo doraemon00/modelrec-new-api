@@ -122,7 +122,7 @@ export function LogStatCards(props: LogStatCardsProps) {
     const rawValue = config.getValue(adaptedStats, timeRangeMinutes)
     const locale = i18n.resolvedLanguage || i18n.language
     const formatted =
-      config.key === 'quota'
+      config.key === 'quota' || config.key === 'balance'
         ? {
             displayValue: formatQuota(rawValue),
             fullValue: formatQuota(rawValue),
@@ -140,7 +140,7 @@ export function LogStatCards(props: LogStatCardsProps) {
 
   return (
     <div className='overflow-hidden rounded-lg border'>
-      <div className='divide-border/60 grid min-w-0 grid-cols-2 divide-x sm:grid-cols-3 lg:grid-cols-5'>
+      <div className='divide-border/60 grid min-w-0 grid-cols-2 divide-x sm:grid-cols-3 lg:grid-cols-6'>
         {items.map((it, idx) => {
           const Icon = it.icon
           return (

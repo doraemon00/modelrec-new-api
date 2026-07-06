@@ -91,7 +91,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
               <Button
                 size='lg'
                 className='h-12 rounded-full px-8 text-base font-medium sf-btn-primary'
-                render={<Link to='/dashboard' />}
+                render={<Link to='/dashboard/models' />}
               >
                 {t('Go to Dashboard')}
                 <ArrowRight className='ml-2 size-4' />
