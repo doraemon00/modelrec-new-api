@@ -53,7 +53,7 @@ func SetApiRouter(router *gin.Engine) {
 		// Standard OAuth providers (GitHub, Discord, OIDC, LinuxDO) - unified route
 		apiRouter.GET("/oauth/:provider", middleware.CriticalRateLimit(), controller.HandleOAuth)
 		// Microservice auth routes (for cross-service authentication)
-		apiRouter.POST("/auth/microservice/set-session", anonymousRequestBodyLimit, controller.MicroserviceSetSession)
+		apiRouter.POST("/auth/session/login", anonymousRequestBodyLimit, controller.MicroserviceSetSession)
 		apiRouter.GET("/auth/session/validate", controller.SessionValidate)
 		apiRouter.GET("/ratio_config", middleware.CriticalRateLimit(), controller.GetRatioConfig)
 
