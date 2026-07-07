@@ -27,6 +27,7 @@ import {
   ListTodo,
   MessageSquare,
   Radio,
+  Receipt,
   ServerCog,
   Settings,
   Ticket,
@@ -58,22 +59,22 @@ export function useSidebarData(): SidebarData {
             url: '/playground',
             icon: FlaskConical,
           },
-          {
-            title: t('Chat'),
-            icon: MessageSquare,
-            type: 'chat-presets',
-          },
+          // {
+          //   title: t('Chat'),
+          //   icon: MessageSquare,
+          //   type: 'chat-presets',
+          // },
         ],
       },
       {
         id: 'general',
         title: t('General'),
         items: [
-          {
-            title: t('Overview'),
-            url: '/dashboard/overview',
-            icon: Activity,
-          },
+          // {
+          //   title: t('Overview'),
+          //   url: '/dashboard/overview',
+          //   icon: Activity,
+          // },
           {
             title: t('Dashboard'),
             url: '/dashboard/models',
@@ -84,18 +85,18 @@ export function useSidebarData(): SidebarData {
             url: '/keys',
             icon: Key,
           },
-          {
-            title: t('Usage Logs'),
-            url: '/usage-logs/common',
-            icon: FileText,
-          },
-          {
-            title: t('Task Logs'),
-            url: '/usage-logs/task',
-            activeUrls: ['/usage-logs/drawing'],
-            configUrls: ['/usage-logs/drawing', '/usage-logs/task'],
-            icon: ListTodo,
-          },
+          // {
+          //   title: t('Usage Logs'),
+          //   url: '/usage-logs/common',
+          //   icon: FileText,
+          // },
+          // {
+          //   title: t('Task Logs'),
+          //   url: '/usage-logs/task',
+          //   activeUrls: ['/usage-logs/drawing'],
+          //   configUrls: ['/usage-logs/drawing', '/usage-logs/task'],
+          //   icon: ListTodo,
+          // },
         ],
       },
       {
@@ -106,6 +107,11 @@ export function useSidebarData(): SidebarData {
             title: t('Wallet'),
             url: '/wallet',
             icon: Wallet,
+          },
+          {
+            title: t('Bills'),
+            url: '/billing',
+            icon: Receipt,
           },
           {
             title: t('Profile'),

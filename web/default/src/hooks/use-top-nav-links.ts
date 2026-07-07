@@ -54,9 +54,6 @@ export function useTopNavLinks(): TopNavLink[] {
     )
   }, [status])
 
-  // Documentation link (may be external)
-  const docsLink: string | undefined = status?.docs_link as string | undefined
-
   const isAuthed = !!auth?.user
 
   const links: TopNavLink[] = []
@@ -66,9 +63,9 @@ export function useTopNavLinks(): TopNavLink[] {
     links.push({ title: t('Home'), href: '/' })
   }
 
-  // Console -> /dashboard (new console path)
+  // Console -> /dashboard/models (用量 / Dashboard page)
   if (modules?.console !== false) {
-    links.push({ title: t('Console'), href: '/dashboard' })
+    links.push({ title: t('Console'), href: '/dashboard/models' })
   }
 
   // Pricing
@@ -85,13 +82,9 @@ export function useTopNavLinks(): TopNavLink[] {
     links.push({ title: t('Rankings'), href: '/rankings', requiresAuth })
   }
 
-  // Docs (supports external links)
+  // Docs (internal developer documentation page, see /docs route)
   if (modules?.docs !== false) {
-    if (docsLink) {
-      links.push({ title: t('Docs'), href: docsLink, external: true })
-    } else {
-      links.push({ title: t('Docs'), href: '/docs' })
-    }
+    links.push({ title: t('Docs'), href: '/docs' })
   }
 
   // About

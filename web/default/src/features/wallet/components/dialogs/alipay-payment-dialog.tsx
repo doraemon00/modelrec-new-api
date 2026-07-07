@@ -44,6 +44,11 @@ interface AlipayPaymentDialogProps {
 export function AlipayPaymentDialog({ open, onFinish }: AlipayPaymentDialogProps) {
   const { t } = useTranslation()
 
+  const handleConfirm = () => {
+    onFinish()
+    window.location.href = '/billing'
+  }
+
   return (
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent showCloseButton={false} className='max-sm:w-[calc(100vw-1.5rem)] sm:max-w-md'>
@@ -63,7 +68,7 @@ export function AlipayPaymentDialog({ open, onFinish }: AlipayPaymentDialogProps
 
         <DialogFooter className='grid grid-cols-1 gap-0'>
 
-          <Button onClick={onFinish}>确认刷新页面</Button>
+          <Button onClick={handleConfirm}>确认刷新页面</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
