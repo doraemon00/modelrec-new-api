@@ -33,7 +33,8 @@ import { type TopNavLink } from '../types'
  * 判断当前路径是否匹配链接（支持子路由）
  * - "/" 仅精确匹配 "/"
  * - 其他路径支持前缀匹配，如 "/dashboard" 匹配 "/dashboard/overview"
- * - "/dashboard" 特殊处理：作为内部页面的兜底，当当前路径不匹配任何其他导航项时保持激活
+ * - "/dashboard" 及 "/dashboard/*" 特殊处理：作为内部页面的兜底，当当前路径不匹配任何其他导航项时保持激活
+ *   （控制台顶部导航链接指向 "/dashboard/models" 等具体分区，需要在整个控制台区域内都保持选中态）
  */
 function isPathActive(
   pathname: string,
@@ -43,11 +44,11 @@ function isPathActive(
   if (href === '/') return pathname === '/'
   if (pathname === href || pathname.startsWith(href + '/')) return true
 
-  // /dashboard 作为已认证内部页面的兜底激活项
-  if (href === '/dashboard' && allHrefs && allHrefs.length > 0) {
+  // /dashboard 及其子分区作为已认证内部页面的兜底激活项
+  if (href.startsWith('/dashboard') && allHrefs && allHrefs.length > 0) {
     // 主页 "/" 有自己的导航项，不应触发控制台兜底
     if (pathname === '/') return false
-    const otherHrefs = allHrefs.filter((h) => h !== '/' && h !== '/dashboard')
+    const otherHrefs = allHrefs.filter((h) => h !== '/' && h !== href)
     const matchesOther = otherHrefs.some(
       (h) => pathname === h || pathname.startsWith(h + '/')
     )

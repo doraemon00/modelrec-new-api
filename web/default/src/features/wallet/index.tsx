@@ -301,7 +301,7 @@ export function Wallet(props: WalletProps) {
         <SectionPageLayout.Title>{t('Wallet')}</SectionPageLayout.Title>
         <SectionPageLayout.Content>
           <div className='mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-5'>
-            <WalletStatsCard user={user} loading={userLoading} />
+            {/* <WalletStatsCard user={user} loading={userLoading} /> */}
 
             <div
               className={
@@ -354,7 +354,7 @@ export function Wallet(props: WalletProps) {
               />
             </div>
 
-            <AffiliateRewardsCard
+            {/* <AffiliateRewardsCard
               user={user}
               affiliateLink={affiliateLink}
               onTransfer={() => setTransferDialogOpen(true)}
@@ -362,7 +362,7 @@ export function Wallet(props: WalletProps) {
                 topupInfo?.payment_compliance_confirmed !== false
               }
               loading={affiliateLoading}
-            />
+            /> */}
           </div>
         </SectionPageLayout.Content>
       </SectionPageLayout>

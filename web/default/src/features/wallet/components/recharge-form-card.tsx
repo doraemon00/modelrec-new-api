@@ -120,6 +120,8 @@ export function RechargeFormCard({
   const [customAmount, setCustomAmount] = useState('')
   const customInputRef = useRef<HTMLInputElement>(null)
   const [isCustomAmountSelected, setIsCustomAmountSelected] = useState(false)
+  // Local payment method state for the simplified (no-online-topup) layout
+  const [simplePaymentMethod, setSimplePaymentMethod] = useState(PAYMENT_TYPES.ALIPAY)
 
   useEffect(() => {
     setLocalAmount(topupAmount.toString())
@@ -316,23 +318,11 @@ export function RechargeFormCard({
 
   return (
     <TitledCard
+      headerClassName="hidden"
       title={t('Add Funds')}
       description={t('Choose alipay amount')}
       icon={<WalletCards className='h-4 w-4' />}
       disableHoverEffect
-      action={
-        onOpenBilling ? (
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={onOpenBilling}
-            className='w-full gap-2 sm:w-auto'
-          >
-            <Receipt className='h-4 w-4' />
-            {t('Order History')}
-          </Button>
-        ) : null
-      }
       contentClassName='space-y-4 sm:space-y-6'
     >
       {/* Online Topup Section - New Amount Card Layout */}
@@ -704,6 +694,62 @@ export function RechargeFormCard({
                   <Pencil className='text-muted-foreground h-3.5 w-3.5' />
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Payment Method Selector + Order History */}
+          <div className='space-y-2.5 sm:space-y-3'>
+            <div className='flex items-center justify-between'>
+              <Label className='text-muted-foreground text-xs font-medium tracking-wider uppercase'>
+                {t('Payment Methods')}
+              </Label>
+              {onOpenBilling && (
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={onOpenBilling}
+                  className='gap-1.5 text-xs text-muted-foreground hover:text-foreground'
+                >
+                  <Receipt className='h-3.5 w-3.5' />
+                  {t('Order History')}
+                </Button>
+              )}
+            </div>
+            <div className='space-y-2'>
+              {/* Alipay - selectable */}
+              <button
+                type='button'
+                onClick={() => setSimplePaymentMethod(PAYMENT_TYPES.ALIPAY)}
+                className={cn(
+                  'flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-left transition-all',
+                  simplePaymentMethod === PAYMENT_TYPES.ALIPAY
+                    ? 'border-primary'
+                    : 'border-muted hover:border-primary/50'
+                )}
+              >
+                {getPaymentIcon(PAYMENT_TYPES.ALIPAY, 'h-6 w-6')}
+                <span className='flex flex-col'>
+                  <span className='text-sm font-medium'>{t('Alipay')}</span>
+                  <span className='text-muted-foreground text-xs'>ALIPAY</span>
+                </span>
+              </button>
+
+              {/* WeChat Pay - disabled with tooltip */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <div className='flex w-full items-center gap-3 rounded-lg border border-muted px-4 py-3 text-left opacity-60 cursor-not-allowed'>
+                        {getPaymentIcon(PAYMENT_TYPES.WECHAT, 'h-6 w-6')}
+                        <span className='flex flex-col'>
+                          <span className='text-sm font-medium'>{t('WeChat Pay')}</span>
+                        </span>
+                      </div>
+                    }
+                  ></TooltipTrigger>
+                  <TooltipContent>{t('Coming Soon!')}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
 
