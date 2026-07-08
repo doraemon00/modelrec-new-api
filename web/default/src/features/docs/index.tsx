@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ArrowRight,
   BookOpen,
@@ -61,12 +61,12 @@ const SIDEBAR_SECTIONS = [
       { id: 'api-reference', labelKey: 'docs.sidebar.apiReference', icon: Code2 },
     ],
   },
-  {
-    titleKey: 'docs.sidebar.sdk',
-    items: [
-      { id: 'sdk-integration', labelKey: 'docs.sidebar.sdkIntegration', icon: Terminal },
-    ],
-  },
+  // {
+  //   titleKey: 'docs.sidebar.sdk',
+  //   items: [
+  //     { id: 'sdk-integration', labelKey: 'docs.sidebar.sdkIntegration', icon: Terminal },
+  //   ],
+  // },
   {
     titleKey: 'docs.sidebar.faq',
     items: [
@@ -84,18 +84,54 @@ type SectionId = typeof SIDEBAR_SECTIONS[number]['items'][number]['id']
 export function DocsPage() {
   const [activeSection, setActiveSection] = useState<SectionId>('get-api-key')
 
-  const scrollToSection = (id: SectionId) => {
+  const scrollToSection = (id: SectionId, scrollTarget?: string) => {
     setActiveSection(id)
-    const el = document.getElementById(id)
+    const el = document.getElementById(scrollTarget ?? id)
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
+  // 滚动联动：根据当前视口位置自动高亮左侧菜单，
+  // 解决点击顶部按钮 / 手动滚动时左侧菜单不同步的问题。
+  useEffect(() => {
+    const ids = SIDEBAR_SECTIONS.flatMap((s) => s.items.map((i) => i.id)) as SectionId[]
+    const marker = 140 // 略高于 64px 固定顶栏 + 间距
+    let ticking = false
+
+    const update = () => {
+      ticking = false
+      let current: SectionId = ids[0]
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= marker) {
+          current = id
+        }
+      }
+      // 滚动到页面底部时，强制高亮最后一项
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+        current = ids[ids.length - 1]
+      }
+      setActiveSection(current)
+    }
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true
+        window.requestAnimationFrame(update)
+      }
+    }
+
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <PublicLayout showMainContainer={false}>
       {/* Hero Section */}
-      <DocsHero />
+      <DocsHero onJump={scrollToSection} />
 
       <div className='mx-auto max-w-7xl px-4 md:px-6 lg:px-8'>
         <div className='flex gap-8 pb-16 pt-4 lg:gap-12'>
@@ -116,7 +152,11 @@ export function DocsPage() {
 // Hero Section
 // ============================================================================
 
-function DocsHero() {
+function DocsHero({
+  onJump,
+}: {
+  onJump: (id: SectionId, scrollTarget?: string) => void
+}) {
   const { t } = useTranslation()
 
   return (
@@ -142,9 +182,7 @@ function DocsHero() {
             <Button
               size='lg'
               className='h-11 rounded-full px-7 text-sm font-medium sf-btn-primary'
-              onClick={() => {
-                document.getElementById('get-api-key')?.scrollIntoView({ behavior: 'smooth' })
-              }}
+              onClick={() => onJump('get-api-key', 'quick-start')}
             >
               <Rocket className='mr-2 size-4' />
               快速开始
@@ -153,9 +191,7 @@ function DocsHero() {
               variant='outline'
               size='lg'
               className='h-11 rounded-full px-7 text-sm font-medium sf-btn-outline'
-              onClick={() => {
-                document.getElementById('api-reference')?.scrollIntoView({ behavior: 'smooth' })
-              }}
+              onClick={() => onJump('api-reference')}
             >
               API 参考
               <ArrowRight className='ml-2 size-4' />
@@ -230,7 +266,7 @@ function DocsContent() {
       <QuickStartSection />
       <FirstConversationSection />
       <ApiReferenceSection />
-      <SdkIntegrationSection />
+      {/* <SdkIntegrationSection /> */}
       <FaqSection />
     </div>
   )
@@ -265,7 +301,7 @@ function QuickStartSection() {
   ] as const
 
   return (
-    <section id='get-api-key'>
+    <section id='quick-start' className='scroll-mt-24'>
       <AnimateInView animation='fade-up'>
         <div className='mb-8 flex items-center gap-3'>
           <div className='bg-red-50 dark:bg-red-900/20 flex size-9 items-center justify-center rounded-lg'>
@@ -282,7 +318,7 @@ function QuickStartSection() {
             <div
               key={step.id}
               id={step.id}
-              className='flex items-start gap-4 rounded-xl border border-border/40 bg-background p-5 transition-colors hover:border-border/60'
+              className='flex items-start gap-4 rounded-xl border border-border/40 bg-background p-5 transition-colors scroll-mt-24 hover:border-border/60'
             >
               <div className='bg-primary flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white'>
                 {step.num}
@@ -309,7 +345,7 @@ function FirstConversationSection() {
   const { t } = useTranslation()
 
   return (
-    <section id='first-conversation'>
+    <section id='first-conversation' className='scroll-mt-24'>
       <AnimateInView animation='fade-up'>
         <div className='mb-8 flex items-center gap-3'>
           <div className='bg-blue-50 dark:bg-blue-900/20 flex size-9 items-center justify-center rounded-lg'>
@@ -323,13 +359,13 @@ function FirstConversationSection() {
 
         <div className='overflow-hidden rounded-lg border shadow-sm' style={{ backgroundColor: '#1a1f2c', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div className='flex items-center gap-2 border-b px-4 py-2.5' style={{ backgroundColor: '#232937', borderColor: 'rgba(255,255,255,0.08)' }}>
-            <span className='rounded-md px-3 py-1 text-xs font-medium' style={{ backgroundColor: 'rgba(117,136,231,0)', color: '#a5b4fc' }}>
+            <span className='rounded-md px-3 py-1 text-xs font-medium' style={{ backgroundColor: 'rgba(117,136,231,0)', color: '#6179eb' }}>
               OpenAI 兼容
             </span>
           </div>
           <pre className='overflow-x-auto p-5 text-sm leading-relaxed' style={{ backgroundColor: '#1a1f2c', color: '#dce3ef' }}>
             <code style={{ color: '#dce3ef' }}>
-{`curl https://your-domain/v1/chat/completions \\
+{`curl https://modelrec.net/v1/chat/completions \\
   -H "Authorization: Bearer sk-your-api-key" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -375,7 +411,7 @@ function ApiReferenceSection() {
   const { t } = useTranslation()
 
   return (
-    <section id='api-reference'>
+    <section id='api-reference' className='scroll-mt-24'>
       <AnimateInView animation='fade-up'>
         <div className='mb-8 flex items-center gap-3'>
           <div className='bg-emerald-50 dark:bg-emerald-900/20 flex size-9 items-center justify-center rounded-lg'>
@@ -390,14 +426,14 @@ function ApiReferenceSection() {
         {/* cURL Example */}
         <div className='mb-6 overflow-hidden rounded-lg border shadow-sm' style={{ backgroundColor: '#1a1f2c', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div className='flex items-center gap-2 border-b px-4 py-2.5' style={{ backgroundColor: '#232937', borderColor: 'rgba(255,255,255,0.08)' }}>
-            <span className='rounded-md px-3 py-1 text-xs font-medium' style={{ backgroundColor: 'rgba(5,191,6,0)', color: '#6ee7b7' }}>
+            <span className='rounded-md px-3 py-1 text-xs font-medium' style={{ backgroundColor: 'rgba(5,191,6,0)', color: 'rgb(0 188 114)' }}>
               cURL
             </span>
             <span className='text-xs' style={{ color: '#9aa5b8' }}>/v1/chat/completions</span>
           </div>
-          <pre className='overflow-x-auto p-5 text-sm leading-relaxed' style={{ backgroundColor: '#1a1f2c', color: '#dce3ef' }}>
+          <pre className='overflow-x-auto p-5 text-sm leading-relaxed' style={{ backgroundColor: '#1a1f2c', color: '#00bc72' }}>
             <code style={{ color: '#dce3ef' }}>
-{`curl -X POST https://your-domain.com/v1/chat/completions \\
+{`curl -X POST https://modelrec.net/v1/chat/completions \\
   -H "Authorization: Bearer sk-xxx" \\
   -H "Content-Type: application/json" \\
   -d '{"model":"gpt-4o","messages":[{"role":"user","content":"Hi"}]}'`}
@@ -408,7 +444,7 @@ function ApiReferenceSection() {
         {/* Python Example */}
         <div className='overflow-hidden rounded-lg border shadow-sm' style={{ backgroundColor: '#1a1f2c', borderColor: 'rgba(255,255,255,0.08)' }}>
           <div className='flex items-center gap-2 border-b px-4 py-2.5' style={{ backgroundColor: '#232937', borderColor: 'rgba(255,255,255,0.08)' }}>
-            <span className='rounded-md px-3 py-1 text-xs font-medium' style={{ backgroundColor: 'rgba(252,141,77,0)', color: '#fcd34d' }}>
+            <span className='rounded-md px-3 py-1 text-xs font-medium' style={{ backgroundColor: 'rgba(252,141,77,0)', color: '#ffa300' }}>
               Python
             </span>
             <span className='text-xs' style={{ color: '#9aa5b8' }}>/v1/chat/completions</span>
@@ -418,7 +454,7 @@ function ApiReferenceSection() {
 {`from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://your-domain.com/v1",
+    base_url="https://modelrec.net/v1",
     api_key="sk-xxx"
 )
 
@@ -537,7 +573,7 @@ function FaqSection() {
   const { t } = useTranslation()
 
   return (
-    <section id='faq-section'>
+    <section id='faq-section' className='scroll-mt-24'>
       <AnimateInView animation='fade-up'>
         <div className='mb-8 flex items-center gap-3'>
           <div className='bg-indigo-50 dark:bg-indigo-900/20 flex size-9 items-center justify-center rounded-lg'>
