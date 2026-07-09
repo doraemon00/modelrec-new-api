@@ -112,7 +112,10 @@ export function LogStatCards(props: LogStatCardsProps) {
     }
   }, [filters, isAdmin, onDataUpdate])
 
+  const userQuota = user?.quota ?? 0
+
   const adaptedStats = {
+    balance: userQuota,
     rpm: stats?.totalCount ?? 0,
     quota: stats?.totalQuota ?? 0,
     tpm: stats?.totalTokens ?? 0,

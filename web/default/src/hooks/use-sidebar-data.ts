@@ -81,9 +81,19 @@ export function useSidebarData(): SidebarData {
             icon: LayoutDashboard,
           },
           {
+            title: t('Bills'),
+            url: '/billing',
+            icon: Receipt,
+          },
+          {
             title: t('API Keys'),
             url: '/keys',
             icon: Key,
+          },
+          {
+            title: t('Wallet'),
+            url: '/wallet',
+            icon: Wallet,
           },
           // {
           //   title: t('Usage Logs'),
@@ -103,16 +113,6 @@ export function useSidebarData(): SidebarData {
         id: 'personal',
         title: t('Personal'),
         items: [
-          {
-            title: t('Wallet'),
-            url: '/wallet',
-            icon: Wallet,
-          },
-          {
-            title: t('Bills'),
-            url: '/billing',
-            icon: Receipt,
-          },
           {
             title: t('Profile'),
             url: '/profile',
