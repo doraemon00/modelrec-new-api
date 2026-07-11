@@ -78,12 +78,23 @@ export function useSidebarData(): SidebarData {
           {
             title: t('Dashboard'),
             url: '/dashboard/models',
+            activeUrlPrefixes: ['/dashboard'],
             icon: LayoutDashboard,
+          },
+          {
+            title: t('Bills'),
+            url: '/billing',
+            icon: Receipt,
           },
           {
             title: t('API Keys'),
             url: '/keys',
             icon: Key,
+          },
+          {
+            title: t('Wallet'),
+            url: '/wallet',
+            icon: Wallet,
           },
           // {
           //   title: t('Usage Logs'),
@@ -104,16 +115,6 @@ export function useSidebarData(): SidebarData {
         title: t('Personal'),
         items: [
           {
-            title: t('Wallet'),
-            url: '/wallet',
-            icon: Wallet,
-          },
-          {
-            title: t('Bills'),
-            url: '/billing',
-            icon: Receipt,
-          },
-          {
             title: t('Profile'),
             url: '/profile',
             icon: User,
@@ -132,6 +133,7 @@ export function useSidebarData(): SidebarData {
           {
             title: t('Models'),
             url: '/models/metadata',
+            activeUrlPrefixes: ['/models'],
             icon: Box,
           },
           {

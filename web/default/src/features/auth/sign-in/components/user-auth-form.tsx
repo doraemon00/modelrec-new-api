@@ -365,13 +365,13 @@ export function UserAuthForm({
             className={cn(
               'relative flex-1 pb-3 text-center text-sm font-medium transition-colors',
               loginMode === 'password'
-                ? 'text-violet-600'
+                ? 'text-primary'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {t('Password login')}
             {loginMode === 'password' && (
-              <span className='absolute bottom-0 left-0 right-0 h-0.5 bg-violet-600' />
+              <span className='absolute bottom-0 left-0 right-0 h-0.5 bg-primary' />
             )}
           </button>
           <button
@@ -383,13 +383,13 @@ export function UserAuthForm({
             className={cn(
               'relative flex-1 pb-3 text-center text-sm font-medium transition-colors',
               loginMode === 'sms'
-                ? 'text-violet-600'
+                ? 'text-primary'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {t('SMS verification login')}
             {loginMode === 'sms' && (
-              <span className='absolute bottom-0 left-0 right-0 h-0.5 bg-violet-600' />
+              <span className='absolute bottom-0 left-0 right-0 h-0.5 bg-primary' />
             )}
           </button>
         </div>
@@ -469,7 +469,7 @@ export function UserAuthForm({
             {/* 登录按钮 - 密码模式 */}
             <Button
               type='submit'
-              className='w-full border-0 py-6 text-base font-medium text-white sf-btn-primary disabled:bg-violet-500/50 disabled:text-white/70'
+              className='w-full border-0 py-6 text-base font-medium text-white sf-btn-primary disabled:bg-primary/50 disabled:text-white/70'
               disabled={
                 isLoading ||
                 (requiresLegalConsent && !agreedToLegal) ||
@@ -557,7 +557,7 @@ export function UserAuthForm({
             {/* 登录按钮 - 验证码模式 */}
             <Button
               type='submit'
-              className='w-full border-0 py-6 text-base font-medium text-white sf-btn-primary disabled:bg-violet-500/50 disabled:text-white/70'
+              className='w-full border-0 py-6 text-base font-medium text-white sf-btn-primary disabled:bg-primary/50 disabled:text-white/70'
               disabled={
                 isLoading ||
                 (requiresLegalConsent && !agreedToLegal) ||

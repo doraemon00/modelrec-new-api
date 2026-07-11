@@ -405,7 +405,7 @@ export function SignUpForm({
       {/* 注册按钮 - 紫色主色调圆角 */}
       <Button
         type='submit'
-        className='w-full border-0 py-6 text-base font-medium text-white sf-btn-primary disabled:bg-violet-500/50 disabled:text-white/70'
+        className='w-full border-0 py-6 text-base font-medium text-white sf-btn-primary disabled:bg-primary/50 disabled:text-white/70'
         disabled={isLoading || !agreedToLegal || !turnstileReady}
       >
         {isLoading ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> : null}

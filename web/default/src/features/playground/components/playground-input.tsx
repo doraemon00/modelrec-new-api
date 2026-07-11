@@ -113,7 +113,7 @@ export function PlaygroundInput({
 
   return (
     <div className='grid shrink-0 gap-4 px-1 md:pb-4'>
-      <PromptInput groupClassName='rounded-xl' onSubmit={handleSubmit}>
+      <PromptInput groupClassName='rounded-xl overflow-hidden' onSubmit={handleSubmit}>
         <PromptInputTextarea
           autoComplete='off'
           autoCorrect='off'

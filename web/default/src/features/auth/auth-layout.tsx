@@ -31,15 +31,6 @@ export function AuthLayout({ children }: AuthLayoutProps) {
 
   return (
     <div className='sf-page-gradient relative grid h-svh max-w-none'>
-      {/* Decorative gradient orbs */}
-      <div
-        aria-hidden
-        className='pointer-events-none absolute inset-0 -z-10 overflow-hidden'
-      >
-        <div className='absolute -top-40 -left-40 h-80 w-80 rounded-full bg-indigo-300/20 blur-3xl dark:bg-indigo-600/10' />
-        <div className='absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-violet-300/20 blur-3xl dark:bg-violet-600/10' />
-        <div className='absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-fuchsia-200/10 blur-3xl dark:bg-fuchsia-600/5' />
-      </div>
 
       <Link
         to='/'
@@ -59,11 +50,11 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         {loading ? (
           <Skeleton className='h-6 w-24' />
         ) : (
-          <h1 className='text-xl font-medium'>{systemName}</h1>
+          <h1 className='text-xl font-medium text-primary'>{systemName}</h1>
         )}
       </Link>
       <div className='container flex items-center px-4 py-12 sm:py-16'>
-        <div className='mx-auto w-full sf-glass-card rounded-2xl border p-6 sm:w-[440px] sm:p-10'>
+        <div className='mx-auto w-full sf-glass-card rounded-2xl p-6 sm:w-[440px] sm:p-10'>
           {children}
         </div>
       </div>

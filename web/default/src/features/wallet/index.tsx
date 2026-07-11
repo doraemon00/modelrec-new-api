@@ -65,8 +65,8 @@ export function Wallet(props: WalletProps) {
   const { t } = useTranslation()
   const [user, setUser] = useState<UserWalletData | null>(null)
   const [userLoading, setUserLoading] = useState(true)
-  const [topupAmount, setTopupAmount] = useState(0)
-  const [selectedPreset, setSelectedPreset] = useState<number | null>(null)
+  const [topupAmount, setTopupAmount] = useState(100)
+  const [selectedPreset, setSelectedPreset] = useState<number | null>(100)
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethod>()
   const [paymentLoading, setPaymentLoading] = useState<string | null>(null)

@@ -181,7 +181,7 @@ function DocsHero({
           <div className='mt-8 flex items-center justify-center gap-4'>
             <Button
               size='lg'
-              className='h-11 rounded-full px-7 text-sm font-medium sf-btn-primary'
+              className='h-11 rounded-lg px-7 text-sm font-medium sf-btn-primary'
               onClick={() => onJump('get-api-key', 'quick-start')}
             >
               <Rocket className='mr-2 size-4' />
@@ -190,7 +190,7 @@ function DocsHero({
             <Button
               variant='outline'
               size='lg'
-              className='h-11 rounded-full px-7 text-sm font-medium sf-btn-outline'
+              className='h-11 rounded-lg px-7 text-sm font-medium border-[#d1d5db] bg-white text-black hover:bg-white hover:border-[#9ca3af] dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-900 dark:hover:border-gray-400'
               onClick={() => onJump('api-reference')}
             >
               API 参考
@@ -320,7 +320,10 @@ function QuickStartSection() {
               id={step.id}
               className='flex items-start gap-4 rounded-xl border border-border/40 bg-background p-5 transition-colors scroll-mt-24 hover:border-border/60'
             >
-              <div className='bg-primary flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white'>
+              <div className={cn(
+                'flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white',
+                step.num === '2' ? 'bg-primary' : 'sf-step-green'
+              )}>
                 {step.num}
               </div>
               <div className='pt-0.5'>

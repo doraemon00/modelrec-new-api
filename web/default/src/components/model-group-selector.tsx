@@ -328,7 +328,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = React.memo(
               }
             />
             <PopoverContent
-              className='bg-popover z-40 w-[90vw] max-w-[20em] rounded-lg border p-0 !shadow-none sm:w-[20em]'
+              className='bg-popover z-40 w-[90vw] max-w-[20em] rounded-lg border border-primary p-0 !shadow-none !ring-0 sm:w-[20em]'
               align='start'
               side='bottom'
               sideOffset={4}
@@ -522,7 +522,7 @@ export const GroupSelector: React.FC<GroupSelectorProps> = React.memo(
               }
             />
             <PopoverContent
-              className='bg-popover z-50 w-[90vw] max-w-[14em] rounded-lg border p-0 !shadow-none sm:w-[14em]'
+              className='bg-popover z-50 w-[90vw] max-w-[14em] rounded-lg border border-primary p-0 !shadow-none !ring-0 sm:w-[14em]'
               align='start'
               side='bottom'
               sideOffset={4}
