@@ -77,6 +77,7 @@ func SessionValidate(c *gin.Context) {
 		"data": map[string]any{
 			"id":       id,
 			"username": username,
+			"display_name":session.Get("display_name"),
 			"role":     session.Get("role"),
 			"status":   session.Get("status"),
 			"group":    session.Get("group"),
