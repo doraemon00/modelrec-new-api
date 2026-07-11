@@ -78,6 +78,7 @@ export function useSidebarData(): SidebarData {
           {
             title: t('Dashboard'),
             url: '/dashboard/models',
+            activeUrlPrefixes: ['/dashboard'],
             icon: LayoutDashboard,
           },
           {
@@ -132,6 +133,7 @@ export function useSidebarData(): SidebarData {
           {
             title: t('Models'),
             url: '/models/metadata',
+            activeUrlPrefixes: ['/models'],
             icon: Box,
           },
           {

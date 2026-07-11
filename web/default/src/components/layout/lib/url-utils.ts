@@ -64,6 +64,23 @@ export function checkIsActive(
     return true
   }
 
+  // URL prefixes keep an item active for the prefix itself and any nested path.
+  // This handles pages whose tabs are routed as sibling segments (e.g. the
+  // Dashboard item at `/dashboard/models` should stay highlighted on
+  // `/dashboard/flow`).
+  if (
+    item.activeUrlPrefixes?.some((url) => {
+      const prefix = urlToString(url)
+      if (!prefix) return false
+      const prefixWithoutQuery = normalizeHref(prefix)
+      if (prefixWithoutQuery === hrefWithoutQuery) return true
+      if (prefixWithoutQuery === '/') return false
+      return hrefWithoutQuery.startsWith(prefixWithoutQuery + '/')
+    })
+  ) {
+    return true
+  }
+
   // For collapsible items (NavCollapsible), check sub-items first
   if ('items' in item && item.items) {
     const collapsibleItem = item as NavCollapsible

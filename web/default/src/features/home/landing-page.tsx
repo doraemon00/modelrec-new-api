@@ -78,7 +78,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
 
       <div className='mx-auto max-w-4xl text-center'>
         <AnimateInView animation='fade-up' delay={0}>
-          <h1 className='text-[clamp(2.2rem,5vw,3.5rem)] leading-[1.15] font-bold tracking-tight hero-title-gradient'>
+          <h1 className='text-[clamp(3rem,6vw,4.5rem)] leading-[1.15] font-bold tracking-tight hero-title-gradient'>
             {t('AI Model Recommendation')}
           </h1>
           <p className='mt-4 text-lg text-gray-800 md:text-xl dark:text-gray-200'>
@@ -101,7 +101,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
               <>
                 <Button
                   size='lg'
-                  className='h-12 rounded-full px-8 text-base font-medium sf-btn-primary'
+                  className='h-12 rounded-lg px-8 text-base font-medium sf-btn-primary'
                   render={<Link to='/sign-in' />}
                 >
                   {t('Get API Key')}
@@ -109,7 +109,7 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
                 <Button
                   variant='outline'
                   size='lg'
-                  className='h-12 rounded-full px-8 text-base font-medium sf-btn-outline'
+                  className='h-12 rounded-lg px-8 text-base font-medium border-[#d1d5db] bg-white text-black hover:bg-white hover:border-[#9ca3af] dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-900 dark:hover:border-gray-400'
                   render={<Link to='/pricing' />}
                 >
                   {t('Configure Market')}
@@ -130,29 +130,29 @@ function HeroSection({ isAuthenticated }: { isAuthenticated: boolean }) {
 const FEATURES = [
   {
     icon: CircleDot,
-    color: 'text-violet-500',
-    bgColor: 'bg-violet-500/10',
+    color: 'text-orange-600 dark:text-orange-400',
+    bgColor: 'bg-orange-500/10',
     titleKey: 'feature.anyModelApi.title',
     descKey: 'feature.anyModelApi.desc',
   },
   {
     icon: DollarSign,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10',
+    color: 'text-green-700 dark:text-green-400',
+    bgColor: 'bg-green-500/10',
     titleKey: 'feature.billingRateLimit.title',
     descKey: 'feature.billingRateLimit.desc',
   },
   {
     icon: Activity,
-    color: 'text-indigo-500',
-    bgColor: 'bg-indigo-500/10',
+    color: 'text-orange-600 dark:text-orange-400',
+    bgColor: 'bg-orange-500/10',
     titleKey: 'feature.performanceMonitor.title',
     descKey: 'feature.performanceMonitor.desc',
   },
   {
     icon: Code,
-    color: 'text-fuchsia-500',
-    bgColor: 'bg-fuchsia-500/10',
+    color: 'text-green-700 dark:text-green-400',
+    bgColor: 'bg-green-500/10',
     titleKey: 'feature.developerSdk.title',
     descKey: 'feature.developerSdk.desc',
   },
@@ -168,7 +168,7 @@ function FeatureCards() {
           const Icon = f.icon
           return (
             <AnimateInView key={f.titleKey} delay={i * 100} animation='scale-in'>
-              <div className='group border-border/40 bg-background flex flex-col items-center rounded-2xl border p-6 text-center transition-all duration-300 hover:border-violet-500/25 hover:bg-muted/20 hover:shadow-md'>
+              <div className='group flex flex-col items-center rounded-2xl border border-[#ececee] bg-background p-6 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-2 hover:border-primary/40 dark:border-gray-700 dark:hover:border-primary/60'>
                 <div
                   className={`mb-4 flex size-14 items-center justify-center rounded-2xl ${f.bgColor}`}
                 >
@@ -196,19 +196,19 @@ function FeatureCards() {
 const SETUP_STEPS = [
   {
     num: '1',
-    numBg: 'bg-violet-500',
+    numBg: 'sf-step-green',
     titleKey: 'setup.step1.title',
     descKey: 'setup.step1.desc',
   },
   {
     num: '2',
-    numBg: 'bg-violet-500',
+    numBg: 'bg-primary',
     titleKey: 'setup.step2.title',
     descKey: 'setup.step2.desc',
   },
   {
     num: '3',
-    numBg: 'bg-violet-500',
+    numBg: 'sf-step-green',
     titleKey: 'setup.step3.title',
     descKey: 'setup.step3.desc',
   },
@@ -218,11 +218,11 @@ function QuickStartSection({ isAuthenticated }: { isAuthenticated: boolean }) {
   const { t } = useTranslation()
 
   return (
-    <section className='relative z-10 border-border/40 bg-muted/20 border-t px-6 py-10 md:py-16'>
+    <section className='relative z-10 px-6 py-10 md:py-16'>
       <div className='mx-auto max-w-5xl'>
-        <div className='grid gap-8 lg:grid-cols-[45fr_55fr] lg:gap-12'>
+        <div className='grid grid-cols-1 gap-0 rounded-3xl bg-[#f9fafb] shadow-lg dark:bg-gray-900 md:grid-cols-[1fr_1fr]'>
           {/* Left: Steps */}
-          <div className='flex flex-col justify-center'>
+          <div className='flex flex-col justify-center rounded-t-3xl bg-white p-8 md:rounded-l-3xl md:rounded-tr-none lg:p-12 dark:bg-gray-900'>
             <AnimateInView animation='fade-right' delay={0}>
               <h2 className='mb-8 text-3xl font-bold tracking-tight md:text-4xl'>
                 {t('setup.title')}
@@ -254,7 +254,7 @@ function QuickStartSection({ isAuthenticated }: { isAuthenticated: boolean }) {
               <div className='mt-8'>
                 <Button
                   size='lg'
-                  className='rounded-full px-8 sf-btn-primary'
+                  className='rounded-lg px-8 sf-btn-primary'
                   render={<Link to={isAuthenticated ? '/wallet' : '/sign-in'} />}
                 >
                   {t('Get Started')}
@@ -265,7 +265,7 @@ function QuickStartSection({ isAuthenticated }: { isAuthenticated: boolean }) {
           </div>
 
           {/* Right: Mock App Preview */}
-          <div className='flex items-center justify-center'>
+          <div className='flex items-center justify-center p-6 md:p-8 lg:p-12'>
             <AnimateInView animation='fade-left' delay={200} className='w-full flex justify-center'>
               <MockAppPreview />
             </AnimateInView>
@@ -284,14 +284,16 @@ function MockAppPreview() {
   const { t } = useTranslation()
 
   return (
-    <div className='relative w-full' style={{ maxWidth: '380px', width: '100%' }}>
+    <div className='relative' style={{ width: '306px' }}>
       {/* Phone frame */}
-      <div className='overflow-hidden rounded-[2rem] border border-gray-200 bg-gradient-to-b from-indigo-50/[0.6] to-white shadow-2xl dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900'>
-        {/* iOS-style status bar with notch */}
-        <div className='flex items-center justify-center gap-3 pt-3 pb-2'>
-          <div className='h-[22px] w-[100px] rounded-full bg-black/80' />
-          <span className='text-[11px] font-semibold text-black/60'>9:41</span>
-          <div className='flex items-center gap-0.5 text-[11px] text-black/60'>
+      <div className='h-[410px] overflow-hidden rounded-[2.5rem] bg-white shadow-2xl dark:bg-gray-900'>
+        {/* iOS-style status bar: time | centered notch | icons */}
+        <div className='grid grid-cols-3 items-center px-6 pt-3 pb-2'>
+          <span className='text-[11px] font-semibold text-black/70 dark:text-white/70'>9:41</span>
+          <div className='flex justify-center'>
+            <div className='h-[22px] w-[90px] rounded-full bg-black/90' />
+          </div>
+          <div className='flex items-center justify-end gap-1 text-[11px] text-black/60 dark:text-white/60'>
             <svg className='size-3.5' viewBox='0 0 24 24' fill='currentColor'><path d='M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 008.107 8.107c-.002.13-.002.261-.002.393A8.498 8.498 0 1112 3z'/></svg>
             <svg className='size-3' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2}><path d='M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01'/></svg>
             <svg className='size-3.5' viewBox='0 0 24 24' fill='currentColor'><rect x='2' y='7' width='18' height='10' rx='2' stroke='currentColor' strokeWidth={1.5} fill='none'/><path d='M23 10l-3 2 3 2V10z'/><rect x='4' y='9' width='12' height='6' rx='0.5' fill='currentColor'/></svg>
@@ -302,21 +304,21 @@ function MockAppPreview() {
         <div className='flex items-center justify-between px-5 pb-3 pt-1'>
           <span className='text-sm font-bold tracking-tight text-gray-800 dark:text-white'>
           燧元路由</span>
-          <span className='text-xs font-medium text-indigo-500 dark:text-indigo-400'>API 设置</span>
+          <span className='text-xs font-medium text-primary'>API 设置</span>
         </div>
 
         {/* App content */}
-        <div className='space-y-3.5 px-4 pb-5'>
+        <div className='space-y-3.5 px-4 pb-6'>
           {/* Action cards row — 3 columns like reference */}
           <div className='grid grid-cols-3 gap-2'>
             {[
-              { label: '充值', icon: '🔑', bg: 'bg-yellow-50/90 dark:bg-yellow-900/15' },
-              { label: '收藏', icon: '❤️', bg: 'bg-rose-50/90 dark:bg-rose-900/15' },
+              { label: '充值', icon: '🔑', bg: 'bg-emerald-50/90 dark:bg-emerald-900/15' },
+              { label: '收藏', icon: '❤️', bg: 'bg-orange-50/90 dark:bg-orange-900/15' },
               { label: '设置', icon: '⚙️', bg: 'bg-slate-50/90 dark:bg-slate-800/40' },
             ].map((card) => (
               <div
                 key={card.label}
-                className={`flex flex-col items-center justify-center rounded-xl py-3 ${card.bg}`}
+                className={`flex flex-col items-center justify-center rounded-2xl border border-border/20 py-3 ${card.bg}`}
               >
                 <span className='text-lg leading-none'>{card.icon}</span>
                 <span className='mt-1.5 text-[11px] font-medium text-gray-600 dark:text-gray-300'>
@@ -327,16 +329,16 @@ function MockAppPreview() {
           </div>
 
           {/* API Key input area */}
-          <div className='rounded-xl border border-gray-200/80 bg-white/80 p-3 dark:border-gray-700/50 dark:bg-gray-800/50'>
-            <p className='mb-1.5 text-[11px] font-medium text-gray-500 dark:text-gray-400'>
+          <div className='rounded-2xl border border-border/30 bg-muted/20 p-3 dark:border-gray-700/50 dark:bg-gray-800/50'>
+            <p className='mb-1.5 text-[11px] font-medium text-muted-foreground dark:text-gray-400'>
               API Key
             </p>
-            <div className='rounded-lg border border-gray-200 bg-gray-50/80 px-3 py-2 font-mono text-xs text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400'>
-              sk-mh-xxxxxxxx....
+            <div className='rounded-lg border border-border/40 bg-background px-3 py-2 font-mono text-xs text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400'>
+              sk-mh-xxxxxxxx...
             </div>
             <button
               type='button'
-              className='mt-2 flex items-center gap-1 text-[11px] font-medium text-orange-500 hover:text-orange-600'
+              className='mt-2 flex items-center gap-1 text-[11px] font-medium text-primary hover:text-primary/80'
             >
               <Copy className='size-3' />
               一键复制
@@ -351,7 +353,7 @@ function MockAppPreview() {
             ].map((model) => (
               <div
                 key={model.name}
-                className='flex items-center justify-between rounded-xl border border-gray-150 px-3.5 py-2.5 dark:border-gray-800/70'
+                className='flex items-center justify-between rounded-xl border border-border/20 bg-card px-3.5 py-2.5'
               >
                 <div className='flex items-center gap-2.5'>
                   <div className='flex size-5 shrink-0 items-center justify-center'>
@@ -373,7 +375,7 @@ function MockAppPreview() {
       {/* Decorative glow behind phone */}
       <div
         aria-hidden
-        className='-z-10 absolute inset-x-4 top-[-12px] h-[calc(100%+24px)] rounded-[2.5rem] bg-gradient-to-br from-violet-200/35 via-purple-200/25 to-transparent blur-2xl dark:from-violet-900/15 dark:via-purple-900/8'
+        className='-z-10 absolute inset-x-4 top-[-12px] h-[calc(100%+24px)] rounded-[2.5rem] bg-gradient-to-br from-orange-200/25 via-amber-200/18 to-transparent blur-2xl dark:from-orange-900/12 dark:via-amber-900/7'
       />
     </div>
   )
@@ -477,7 +479,7 @@ function LandingFooter() {
           {/* Brand column */}
           <div className='shrink-0 max-w-[240px]'>
             <Link to='/' className='group flex items-center gap-2.5'>
-              <div className='bg-violet-500/10 flex size-8 items-center justify-center rounded-lg text-sm font-bold text-violet-600'>
+              <div className='bg-primary/10 flex size-8 items-center justify-center rounded-lg text-sm font-bold text-primary'>
                 M
               </div>
               <span className='text-base font-semibold tracking-tight'>

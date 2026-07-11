@@ -52,7 +52,7 @@ export function Features(_props: FeaturesProps) {
             (name) => (
               <div
                 key={name}
-                className='border-border/30 bg-muted/20 text-muted-foreground flex items-center justify-center rounded-lg border px-3 py-2 text-xs transition-colors duration-300 hover:border-blue-500/30 hover:bg-blue-500/5'
+                className='border-border/30 bg-muted/20 text-muted-foreground flex items-center justify-center rounded-lg border px-3 py-2 text-xs transition-colors duration-300 hover:border-orange-500/30 hover:bg-orange-500/5'
               >
                 {name}
               </div>

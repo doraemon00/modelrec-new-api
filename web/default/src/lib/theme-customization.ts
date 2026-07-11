@@ -78,9 +78,11 @@ export const THEME_PRESETS = [
     swatches: ['oklch(0.5709 0.1808 306.89)', 'oklch(0.811 0.0589 201.14)'],
   },
   {
-    value: 'blue-purple',
-    name: 'Blue Purple',
-    swatches: ['oklch(0.84 0.06 265.46)', 'oklch(0.84 0.06 298.96)'],
+    // Warm cream canvas (#FEFCF8) + vibrant orange (#FF8A00) primary
+    // + forest green (#007B43) accent for stats & highlights.
+    value: 'orange-green',
+    name: 'Orange Green',
+    swatches: ['#FF8A00', '#007B43'],
   },
 ] as const
 
@@ -121,7 +123,7 @@ export type ThemeCustomization = {
 }
 
 export const DEFAULT_THEME_CUSTOMIZATION: ThemeCustomization = {
-  preset: 'blue-purple',
+  preset: 'orange-green',
   font: 'default',
   radius: 'default',
   scale: 'default',

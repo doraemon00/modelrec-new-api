@@ -608,102 +608,98 @@ For commercial licensing, please contact support@quantumnous.com
 
 /* ── SiliconFlow-style gradient theme for public pages ── */
 @layer utilities {
-  /* Hero title gradient: purple → blue → purple (matching reference) */
+  /* Hero title: solid black, large font */
   .hero-title-gradient {
-    background: linear-gradient(
-      90deg,
-      #C647FC 19.71%,
-      #437EFF 50.34%,
-      #6E29F6 80.6%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    -webkit-text-fill-color: unset;
+    background: none;
+    color: oklch(0.18 0.02 50);
   }
 
-  /* Page background: compressed left-blue → mid #cbd6f6 → right purple */
+  /* In dark mode the page background is also dark, so the dark title would
+   * be invisible — switch it to a light, warm-tinted color. */
+  .dark .hero-title-gradient {
+    color: oklch(0.96 0.01 60);
+  }
+
+  /* Page background: default to the warm cream / deep charcoal used by the
+   * orange-green preset so public pages (home, model market, leaderboard, docs)
+   * stay consistent regardless of the active color preset. */
   .sf-page-gradient {
-    background: linear-gradient(
-      90deg,
-      #cfe3fa 0%,
-              #cbd6f6 30%,
-              #d0d8f4 60%,
-              #d8d8f6 100%
-    );
+    background: #FEFCF8;
   }
 
   .dark .sf-page-gradient {
-    background: linear-gradient(
-      90deg,
-      oklch(0.22 0.05 240) 0%,
-      oklch(0.23 0.04 260) 50%,
-      oklch(0.24 0.03 280) 100%
-    );
+    background: oklch(0.168 0.012 60);
   }
 
-  /* Hero area subtle blue-purple glow */
+  /* Hero area: clean — no colored glows */
   .sf-hero-glow {
-    background:
-      radial-gradient(
-        ellipse 80% 55% at 20% 40%,
-        rgba(99, 102, 241, 0.10) 0%,
-        transparent 65%
-      ),
-      radial-gradient(
-        ellipse 70% 50% at 75% 35%,
-        rgba(139, 92, 246, 0.08) 0%,
-        transparent 65%
-      );
+    background: none;
   }
 
   .dark .sf-hero-glow {
-    background:
-      radial-gradient(
-        ellipse 80% 55% at 20% 40%,
-        rgba(99, 102, 241, 0.06) 0%,
-        transparent 65%
-      ),
-      radial-gradient(
-        ellipse 70% 50% at 75% 35%,
-        rgba(139, 92, 246, 0.05) 0%,
-        transparent 65%
-      );
+    background: none;
   }
 
-  /* Purple primary button - override default dark hover to stay in violet family */
+  /* Orange primary button — brand #FF8A00 (theme --primary). Hover uses
+   * #f97316 for a brighter orange feedback. Text is locked to white (enabled state)
+   * so it never shifts on hover. */
   .sf-btn-primary {
-    @apply bg-violet-600 text-white shadow-lg shadow-violet-500/25;
+    @apply text-white shadow-lg;
+    background: var(--primary, #FF8A00) !important;
+    background-color: var(--primary, #FF8A00) !important;
+    box-shadow: 0 4px 14px rgba(255, 138, 0, 0.30);
   }
-  .sf-btn-primary:hover {
-    @apply bg-violet-700;
+  .sf-btn-primary:not(:disabled) {
+    color: #FFFFFF !important;
+  }
+  .sf-btn-primary:hover,
+  .sf-btn-primary:active {
+    background: #f97316 !important;
+    background-color: #f97316 !important;
+    box-shadow: 0 4px 18px rgba(249, 115, 22, 0.35);
   }
 
-  /* Purple outline button - keep hover in violet tones */
+  /* Orange outline button */
   .sf-btn-outline {
-    @apply border-violet-300 text-violet-700 transition-colors duration-200;
+    @apply border-orange-300 text-orange-700 transition-colors duration-200;
   }
   .sf-btn-outline:hover {
-    @apply bg-violet-50 border-violet-400 dark:border-violet-600 dark:text-violet-200 dark:bg-violet-950/40;
+    @apply bg-orange-50 border-orange-400 dark:border-orange-600 dark:text-orange-200 dark:bg-orange-950/40;
   }
 
-  /* Glass morphism card for auth pages */
+  /* Green step badge — used for steps 1 & 3 on landing / docs pages */
+  .sf-step-green {
+    background: #007B43 !important;
+    background-color: #007B43 !important;
+  }
+
+  /* Glass morphism card for auth pages: soft white border + deep neutral shadow */
   .sf-glass-card {
-    @apply bg-white/80 backdrop-blur-xl border-white/60 shadow-xl shadow-purple-500/5;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow:
+      0 20px 50px rgba(0, 0, 0, 0.08),
+      0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .dark .sf-glass-card {
-    @apply bg-gray-900/80 backdrop-blur-xl border-gray-700/50 shadow-xl shadow-purple-500/10;
+    background: rgba(17, 24, 39, 0.88);
+    border: 1px solid rgba(55, 65, 81, 0.6);
+    box-shadow:
+      0 20px 50px rgba(0, 0, 0, 0.25),
+      0 1px 3px rgba(0, 0, 0, 0.15);
   }
 
-  /* Header bar: full-width, glass-morphism white effect, no border */
+  /* Header bar: solid white opaque */
   .sf-header-transparent {
-    background: rgba(255, 255, 255, 0.15);
-    border-bottom: none;
+    background: #FFFFFF;
+    border-bottom: 1px solid #e5e7eb;
   }
 
   .dark .sf-header-transparent {
-    background: rgba(15, 15, 25, 0.15);
-    border-bottom: none;
+    background: oklch(0.16 0.01 55);
+    border-bottom: 1px solid rgba(68, 62, 48, 0.36);
   }
 }
