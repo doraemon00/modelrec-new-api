@@ -147,13 +147,13 @@ function StyledAboutContent() {
             {t("about.weBelieve")}
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 sm:gap-x-14">
+          <div className="flex flex-nowrap items-center justify-center gap-4 sm:gap-8 md:gap-12">
             {values.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.key}
-                  className="flex min-w-[120px] flex-col items-center gap-2 text-center"
+                  className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center"
                 >
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Icon className="h-5 w-5" />
