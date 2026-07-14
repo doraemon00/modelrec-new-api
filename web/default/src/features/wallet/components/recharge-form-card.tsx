@@ -120,6 +120,8 @@ export function RechargeFormCard({
   const [customAmount, setCustomAmount] = useState('')
   const customInputRef = useRef<HTMLInputElement>(null)
   const [isCustomAmountSelected, setIsCustomAmountSelected] = useState(false)
+  // Local payment method state for the simplified (no-online-topup) layout
+  const [simplePaymentMethod, setSimplePaymentMethod] = useState(PAYMENT_TYPES.ALIPAY)
 
   useEffect(() => {
     setLocalAmount(topupAmount.toString())
@@ -218,7 +220,7 @@ export function RechargeFormCard({
   const isCustomAmountValid = (): boolean => {
     if (!customAmount.trim()) return false
     const numValue = parseInt(customAmount, 10)
-    return !isNaN(numValue) && numValue > 0
+    return !isNaN(numValue) && numValue >= 10
   }
 
   const handleCustomCardClick = () => {
@@ -316,23 +318,11 @@ export function RechargeFormCard({
 
   return (
     <TitledCard
+      headerClassName="hidden"
       title={t('Add Funds')}
       description={t('Choose alipay amount')}
       icon={<WalletCards className='h-4 w-4' />}
       disableHoverEffect
-      action={
-        onOpenBilling ? (
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={onOpenBilling}
-            className='w-full gap-2 sm:w-auto'
-          >
-            <Receipt className='h-4 w-4' />
-            {t('Order History')}
-          </Button>
-        ) : null
-      }
       contentClassName='space-y-4 sm:space-y-6'
     >
       {/* Online Topup Section - New Amount Card Layout */}
@@ -613,11 +603,13 @@ export function RechargeFormCard({
               ].map((item) => (
                 <div
                   key={item.value}
+                  data-topup-amount-card
+                  data-selected={selectedPreset === item.value && !isCustomAmountSelected ? 'true' : undefined}
                   className={cn(
                     'relative flex cursor-pointer flex-col items-center gap-2 rounded-lg border px-4 py-6 text-center transition-all min-h-[90px] justify-center',
                     selectedPreset === item.value && !isCustomAmountSelected
-                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                      : 'border-muted hover:border-primary/50'
+                      ? 'border-2 border-[#007b43] bg-[#007b43]/10 dark:border-[#007b43] dark:bg-[#007b43]/10'
+                      : 'border-muted hover:border-[#007b43]/50'
                   )}
                   onClick={() => handlePresetClick({
                     value: item.value,
@@ -635,7 +627,7 @@ export function RechargeFormCard({
                   <span className={cn(
                     'text-lg font-semibold',
                     selectedPreset === item.value && !isCustomAmountSelected
-                      ? 'text-primary'
+                      ? 'text-[#007b43]'
                       : ''
                   )}>¥{item.value}</span>
                   <span className='text-muted-foreground text-xs leading-tight'>
@@ -646,23 +638,28 @@ export function RechargeFormCard({
 
               {/* Custom amount input card - same selection style */}
               <div
+                data-topup-amount-card
+                data-selected={isCustomAmountSelected ? 'true' : undefined}
                 className={cn(
                   'flex flex-col items-center gap-2 rounded-lg border px-4 py-6 text-center cursor-pointer transition-all min-h-[90px] justify-center',
                   isCustomAmountSelected
-                    ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                    : 'border-muted hover:border-primary/50'
+                    ? 'border-2 border-[#007b43] bg-[#007b43]/10 dark:border-[#007b43] dark:bg-[#007b43]/10'
+                    : 'border-muted hover:border-[#007b43]/50'
                 )}
                 onClick={handleCustomCardClick}
               >
                 {/* ¥ symbol + Input value on top - same style as preset amount */}
                 <div className='flex items-center justify-center gap-0.5'>
-                  <span className='text-lg font-semibold'>¥</span>
+                  <span className={cn(
+                    'text-lg font-semibold',
+                    isCustomAmountSelected && 'text-[#007b43]'
+                  )}>¥</span>
                   <Input
                     ref={customInputRef}
                     id='custom-topup-amount'
                     type='text'
                     inputMode='numeric'
-                    min={1}
+                    min={10}
                     value={customAmount}
                     onChange={(e) => {
                       handleCustomAmountChange(e.target.value)
@@ -693,17 +690,77 @@ export function RechargeFormCard({
                       }
                     }}
                     placeholder={t('Enter Amount')}
-                    className='[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance:textfield] text-lg font-semibold w-full text-center border-none shadow-none focus-visible:ring-0 p-0 bg-transparent'
+                    className={cn(
+                      '[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance:textfield] text-lg font-semibold w-full text-center border-none shadow-none focus-visible:ring-0 p-0 bg-transparent',
+                      isCustomAmountSelected && 'text-[#007b43] placeholder:text-[#007b43]/50'
+                    )}
                   />
                 </div>
                 {/* Label with icon below - same style as preset description */}
                 <div className='flex items-center gap-1'>
                   <span className='text-muted-foreground text-xs leading-tight'>
-                    {t('Custom Amount')}
+                    {t('Custom Amount (Minimum 10 CNY)')}
                   </span>
                   <Pencil className='text-muted-foreground h-3.5 w-3.5' />
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Payment Method Selector + Order History */}
+          <div className='space-y-2.5 sm:space-y-3'>
+            <div className='flex items-center justify-between'>
+              <Label className='text-muted-foreground text-xs font-medium tracking-wider uppercase'>
+                {t('Payment Methods')}
+              </Label>
+              {onOpenBilling && (
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={onOpenBilling}
+                  className='gap-1.5 text-xs text-muted-foreground hover:text-foreground'
+                >
+                  <Receipt className='h-3.5 w-3.5' />
+                  {t('Order History')}
+                </Button>
+              )}
+            </div>
+            <div className='space-y-2'>
+              {/* Alipay - selectable */}
+              <button
+                type='button'
+                data-payment-method={PAYMENT_TYPES.ALIPAY}
+                data-selected={simplePaymentMethod === PAYMENT_TYPES.ALIPAY ? 'true' : undefined}
+                onClick={() => setSimplePaymentMethod(PAYMENT_TYPES.ALIPAY)}
+                className={cn(
+                  'flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-left transition-all',
+                  simplePaymentMethod === PAYMENT_TYPES.ALIPAY
+                    ? 'border-2 border-primary bg-primary/10 ring-0 dark:border-primary dark:bg-primary/10'
+                    : 'border-muted hover:border-primary/50'
+                )}
+              >
+                {getPaymentIcon(PAYMENT_TYPES.ALIPAY, 'h-6 w-6')}
+                <span className='flex flex-col'>
+                  <span className='text-sm font-medium'>{t('Alipay')}</span>
+                </span>
+              </button>
+
+              {/* WeChat Pay - disabled with tooltip */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <div className='flex w-full items-center gap-3 rounded-lg border border-muted px-4 py-3 text-left opacity-60 cursor-not-allowed'>
+                        {getPaymentIcon(PAYMENT_TYPES.WECHAT, 'h-6 w-6')}
+                        <span className='flex flex-col'>
+                          <span className='text-sm font-medium'>{t('WeChat Pay')}</span>
+                        </span>
+                      </div>
+                    }
+                  ></TooltipTrigger>
+                  <TooltipContent>{t('Coming Soon!')}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
 

@@ -57,15 +57,15 @@ const ACCENT_CLASSES: Record<
   },
   blue: {
     activeText: 'text-blue-600 dark:text-blue-400',
-    activeBorder: 'border-blue-500 dark:border-blue-400',
+    activeBorder: 'border-orange-500 dark:border-orange-400',
     badge:
-      'bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400',
+      'bg-orange-500/10 text-orange-600 dark:bg-orange-400/10 dark:text-orange-400',
   },
   violet: {
-    activeText: 'text-violet-600 dark:text-violet-400',
-    activeBorder: 'border-violet-500 dark:border-violet-400',
+    activeText: 'text-green-700 dark:text-green-400',
+    activeBorder: 'border-green-600 dark:border-green-400',
     badge:
-      'bg-violet-500/10 text-violet-600 dark:bg-violet-400/10 dark:text-violet-400',
+      'bg-green-500/10 text-green-700 dark:bg-green-400/10 dark:text-green-400',
   },
 }
 

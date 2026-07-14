@@ -20,6 +20,7 @@ import {
   Hash,
   Coins,
   Layers,
+  WalletCards,
   Gauge,
   Zap,
   Flame,
@@ -42,6 +43,13 @@ export function useModelStatCardsConfig(): StatCardConfig[] {
   const { t } = useTranslation()
 
   return [
+    {
+      key: 'balance',
+      title: t('Top-up Balance'),
+      description: t('Remaining quota'),
+      icon: WalletCards,
+      getValue: (stat) => stat?.balance ?? 0,
+    },
     {
       key: 'count',
       title: t('Total Count'),

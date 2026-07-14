@@ -27,6 +27,13 @@ type BaseNavItem = {
   badge?: string
   icon?: React.ElementType
   activeUrls?: (LinkProps['to'] | (string & {}))[]
+  /**
+   * URL prefixes that keep this item active. A prefix matches the current
+   * pathname when it is exactly the prefix or nested under it (prefix + '/').
+   * Useful for top-level pages whose tabs are routed as sibling segments
+   * (e.g. `/dashboard/flow` should keep the Dashboard menu item highlighted).
+   */
+  activeUrlPrefixes?: (LinkProps['to'] | (string & {}))[]
   configUrls?: (LinkProps['to'] | (string & {}))[]
   /**
    * Minimum role required to see this item in the sidebar. When set, the item

@@ -33,6 +33,11 @@ export function ApiKeys() {
           <ApiKeysPrimaryButtons />
         </SectionPageLayout.Actions>
         <SectionPageLayout.Content>
+          <p className='text-black dark:text-white mb-3 text-sm leading-relaxed'>
+            {t(
+              'This is a list of all your API keys. API keys are only visible and copyable when created. Please save them properly. Do not share your API keys with others or expose them in browser or other client code. To protect your account security, we may automatically disable API keys that we find have been publicly leaked.'
+            )}
+          </p>
           <ApiKeysTable />
         </SectionPageLayout.Content>
       </SectionPageLayout>

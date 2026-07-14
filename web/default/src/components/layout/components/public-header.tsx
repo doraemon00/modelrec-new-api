@@ -51,8 +51,13 @@ function isPathActive(
   if (href === '/') return pathname === '/'
   if (pathname === href || pathname.startsWith(href + '/')) return true
 
-  // /dashboard 作为已认证内部页面的兜底激活项
-  if (href === '/dashboard' && allHrefs && allHrefs.length > 0) {
+  // /dashboard 作为已认证内部页面的兜底激活项（覆盖 /dashboard 及其子路由，
+  // 例如 Console 链接指向 /dashboard/models 时，用量之外的其他内部页也应保持高亮）
+  if (
+    (href === '/dashboard' || href.startsWith('/dashboard/')) &&
+    allHrefs &&
+    allHrefs.length > 0
+  ) {
     // 主页 "/" 有自己的导航项，不应触发控制台兜底
     if (pathname === '/') return false
     const otherHrefs = allHrefs.filter((h) => h !== '/' && h !== '/dashboard')
@@ -220,7 +225,7 @@ export function PublicHeader(props: PublicHeaderProps) {
                   />
                 )}
               </div>
-              <span className='text-xl font-semibold tracking-tight'>
+              <span className='text-xl font-semibold tracking-tight text-primary'>
                 {loading ? <Skeleton className='h-4 w-16' /> : displaySiteName}
               </span>
             </Link>

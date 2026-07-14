@@ -140,7 +140,7 @@ function DataTableFacetedFilterInner<TData, TValue>({
                           : 'opacity-50 [&_svg]:invisible'
                       )}
                     >
-                      <CheckIcon className={cn('text-background h-4 w-4')} />
+                      <CheckIcon className={cn('text-current h-4 w-4')} />
                     </div>
                     {option.iconNode ? (
                       <span className='text-muted-foreground flex size-4 items-center justify-center'>
