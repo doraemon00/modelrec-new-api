@@ -59,7 +59,7 @@ export function HomeHeader() {
 
   return (
     <>
-      <header className='fixed inset-x-0 top-0 z-50 h-[61px] border-b border-[#e5e7eb] bg-white/95 dark:border-white/10 dark:bg-[#11131a]'>
+      <header className='sticky top-0 z-50 h-[var(--header-height,4rem)] sf-header-transparent backdrop-blur-xl'>
         <nav className='flex h-full items-center gap-8 px-6'>
           <div className='flex shrink-0 items-center gap-1.5'>
             <button
@@ -166,7 +166,7 @@ export function HomeHeader() {
 
       <div
         className={cn(
-          'fixed inset-x-0 top-[61px] bottom-0 z-40 bg-white px-6 py-8 transition-[opacity,transform] duration-300 dark:bg-[#15141a] lg:hidden',
+          'fixed inset-x-0 top-[var(--header-height,4rem)] bottom-0 z-40 bg-white px-6 py-8 transition-[opacity,transform] duration-300 dark:bg-[#15141a] lg:hidden',
           mobileOpen
             ? 'pointer-events-auto translate-y-0 opacity-100'
             : 'pointer-events-none -translate-y-2 opacity-0'

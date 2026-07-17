@@ -44,7 +44,7 @@ export function Hero(props: HeroProps) {
     )
 
   return (
-    <section className='relative overflow-hidden bg-[#f7f5f9] px-6 pt-28 pb-20 md:pt-28 md:pb-14 dark:bg-[#17151a]'>
+    <section className='relative overflow-hidden bg-[#f7f5f9] px-6 pt-12 pb-20 md:pb-14 dark:bg-[#17151a]'>
       <div className='mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)] lg:gap-10'>
         <div className='relative z-10'>
           <p className='text-4xl font-black tracking-[-0.055em] text-[#ff8700] md:text-6xl lg:text-[4.5rem] lg:leading-none'>
