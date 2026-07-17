@@ -1,11 +1,3 @@
-import {
-  ArrowLeft01Icon,
-  Cancel01Icon,
-  Menu01Icon,
-  UserCircleIcon,
-} from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Link } from '@tanstack/react-router'
 /*
 Copyright (C) 2023-2026 QuantumNous
 
@@ -24,35 +16,32 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import {
+  ArrowLeft01Icon,
+  Cancel01Icon,
+  Menu01Icon,
+  UserCircleIcon,
+} from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { useSystemConfig } from '@/hooks/use-system-config'
+import { useTopNavLinks } from '@/hooks/use-top-nav-links'
 import { formatQuota } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth-store'
 
 import { HomeModelSearch } from './home-model-search'
 
-const HOME_NAV_LINKS = [
-  { label: 'Model Marketplace', to: '/pricing' },
-  { label: 'Rankings', to: '/rankings' },
-  { label: 'Playground', to: '/playground' },
-  { label: 'Pricing', to: '/pricing' },
-  { label: 'Console', to: '/dashboard' },
-  {
-    label: 'Forum',
-    href: 'https://docs.newapi.pro/support/community-interaction/',
-  },
-  { label: 'Docs', to: '/docs' },
-] as const
-
 export function HomeHeader() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { t } = useTranslation()
   const { systemName } = useSystemConfig()
   const { auth } = useAuthStore()
+  const navLinks = useTopNavLinks()
   const user = auth.user
 
   useEffect(() => {
@@ -94,24 +83,33 @@ export function HomeHeader() {
           </div>
 
           <div className='ml-auto hidden min-w-0 flex-1 items-center justify-end gap-0.5 lg:flex'>
-            {HOME_NAV_LINKS.map((link) =>
-              'href' in link ? (
+            {navLinks.map((link) =>
+              link.external ? (
                 <a
-                  key={link.label}
+                  key={link.href}
                   href={link.href}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='dark:text-muted-foreground dark:hover:text-foreground rounded-lg px-3.5 py-2 text-[13px] font-medium whitespace-nowrap text-[#374151] transition-colors hover:bg-black/5 hover:text-[#111827] dark:hover:bg-white/10'
+                  aria-disabled={link.disabled}
+                  tabIndex={link.disabled ? -1 : undefined}
+                  className={cn(
+                    'dark:text-muted-foreground dark:hover:text-foreground rounded-lg px-3.5 py-2 text-[13px] font-medium whitespace-nowrap text-[#374151] transition-colors hover:bg-black/5 hover:text-[#111827] dark:hover:bg-white/10',
+                    link.disabled && 'pointer-events-none opacity-50'
+                  )}
                 >
-                  {t(link.label)}
+                  {link.title}
                 </a>
               ) : (
                 <Link
-                  key={link.label}
-                  to={link.to}
-                  className='dark:text-muted-foreground dark:hover:text-foreground rounded-lg px-3.5 py-2 text-[13px] font-medium whitespace-nowrap text-[#374151] transition-colors hover:bg-black/5 hover:text-[#111827] dark:hover:bg-white/10'
+                  key={link.href}
+                  to={link.href}
+                  disabled={link.disabled}
+                  className={cn(
+                    'dark:text-muted-foreground dark:hover:text-foreground rounded-lg px-3.5 py-2 text-[13px] font-medium whitespace-nowrap text-[#374151] transition-colors hover:bg-black/5 hover:text-[#111827] dark:hover:bg-white/10',
+                    link.disabled && 'pointer-events-none opacity-50'
+                  )}
                 >
-                  {link.label === 'Playground' ? link.label : t(link.label)}
+                  {link.title}
                 </Link>
               )
             )}
@@ -175,26 +173,35 @@ export function HomeHeader() {
         )}
       >
         <nav className='flex flex-col gap-1'>
-          {HOME_NAV_LINKS.map((link) =>
-            'href' in link ? (
+          {navLinks.map((link) =>
+            link.external ? (
               <a
-                key={link.label}
+                key={link.href}
                 href={link.href}
                 target='_blank'
                 rel='noopener noreferrer'
                 onClick={() => setMobileOpen(false)}
-                className='dark:text-muted-foreground px-2 py-3 text-center text-base font-medium text-[#374151] transition-colors hover:text-[#ff8700]'
+                aria-disabled={link.disabled}
+                tabIndex={link.disabled ? -1 : undefined}
+                className={cn(
+                  'dark:text-muted-foreground px-2 py-3 text-center text-base font-medium text-[#374151] transition-colors hover:text-[#ff8700]',
+                  link.disabled && 'pointer-events-none opacity-50'
+                )}
               >
-                {link.label === 'Playground' ? link.label : t(link.label)}
+                {link.title}
               </a>
             ) : (
               <Link
-                key={link.label}
-                to={link.to}
+                key={link.href}
+                to={link.href}
+                disabled={link.disabled}
                 onClick={() => setMobileOpen(false)}
-                className='dark:text-muted-foreground px-2 py-3 text-center text-base font-medium text-[#374151] transition-colors hover:text-[#ff8700]'
+                className={cn(
+                  'dark:text-muted-foreground px-2 py-3 text-center text-base font-medium text-[#374151] transition-colors hover:text-[#ff8700]',
+                  link.disabled && 'pointer-events-none opacity-50'
+                )}
               >
-                {link.label === 'Playground' ? link.label : t(link.label)}
+                {link.title}
               </Link>
             )
           )}
