@@ -19,10 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 import { describe, expect, test } from 'bun:test'
 
 import * as payment from '../src/features/wallet/lib/payment'
-import type {
-  PaymentMethod,
-  TopupInfo,
-} from '../src/features/wallet/types'
+import type { PaymentMethod, TopupInfo } from '../src/features/wallet/types'
 
 const buildTopupInfo = (overrides: Partial<TopupInfo> = {}): TopupInfo => ({
   enable_online_topup: false,
@@ -82,5 +79,40 @@ describe('wallet top-up configuration', () => {
         buildTopupInfo({ pay_methods: configuredMethods })
       )
     ).toBe('alipay')
+  })
+})
+
+const readWalletSource = (path: string) =>
+  Bun.file(new URL(`../src/features/wallet/${path}`, import.meta.url)).text()
+
+describe('wallet top-up source boundary', () => {
+  test('does not contain the hard-coded Alipay fallback', async () => {
+    const [formSource, walletSource] = await Promise.all([
+      readWalletSource('components/recharge-form-card.tsx'),
+      readWalletSource('index.tsx'),
+    ])
+
+    expect(formSource).toContain(
+      'const paymentMethods = getAvailablePaymentMethods(topupInfo)'
+    )
+    expect(formSource).not.toContain('Ensure Alipay is always available')
+    expect(formSource).not.toContain('simplePaymentMethod')
+    expect(formSource).not.toContain('{ value: 50, label:')
+    expect(formSource).not.toContain('onPayNow?:')
+    expect(walletSource).not.toContain('handlePayNow')
+  })
+
+  test('restores the unavailable and compliance states', async () => {
+    const formSource = await readWalletSource(
+      'components/recharge-form-card.tsx'
+    )
+
+    expect(formSource).not.toContain('// <Alert>')
+    expect(formSource).toContain(
+      'Online topup is not enabled. Please use redemption code or contact administrator.'
+    )
+    expect(formSource).toContain(
+      'Redemption codes are disabled until the administrator confirms compliance terms.'
+    )
   })
 })

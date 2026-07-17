@@ -18,20 +18,22 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getSelf } from '@/lib/api'
+
+import { SectionPageLayout } from '@/components/layout'
 import { useStatus } from '@/hooks/use-status'
 import { useSystemConfig } from '@/hooks/use-system-config'
-import { SectionPageLayout } from '@/components/layout'
+import { getSelf } from '@/lib/api'
+
 import { AffiliateRewardsCard } from './components/affiliate-rewards-card'
+import { AlipayPaymentDialog } from './components/dialogs/alipay-payment-dialog'
 import { BillingHistoryDialog } from './components/dialogs/billing-history-dialog'
 import { CreemConfirmDialog } from './components/dialogs/creem-confirm-dialog'
 import { PaymentConfirmDialog } from './components/dialogs/payment-confirm-dialog'
-import { AlipayPaymentDialog } from './components/dialogs/alipay-payment-dialog'
 import { TransferDialog } from './components/dialogs/transfer-dialog'
 import { RechargeFormCard } from './components/recharge-form-card'
 import { SubscriptionPlansCard } from './components/subscription-plans-card'
 import { WalletStatsCard } from './components/wallet-stats-card'
-import { DEFAULT_DISCOUNT_RATE } from './constants'
+import { DEFAULT_DISCOUNT_RATE, PAYMENT_TYPES } from './constants'
 import {
   useTopupInfo,
   usePayment,
@@ -49,7 +51,6 @@ import {
   redirectPaymentWindow,
   openPaymentWindow,
 } from './lib'
-import { PAYMENT_TYPES } from './constants'
 import type {
   UserWalletData,
   PaymentMethod,
@@ -65,8 +66,8 @@ export function Wallet(props: WalletProps) {
   const { t } = useTranslation()
   const [user, setUser] = useState<UserWalletData | null>(null)
   const [userLoading, setUserLoading] = useState(true)
-  const [topupAmount, setTopupAmount] = useState(100)
-  const [selectedPreset, setSelectedPreset] = useState<number | null>(100)
+  const [topupAmount, setTopupAmount] = useState(0)
+  const [selectedPreset, setSelectedPreset] = useState<number | null>(null)
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethod>()
   const [paymentLoading, setPaymentLoading] = useState<string | null>(null)
@@ -146,7 +147,9 @@ export function Wallet(props: WalletProps) {
 
       // Calculate initial payment amount with default payment type
       const defaultPaymentType = getDefaultPaymentType(topupInfo)
-      calculatePaymentAmount(minTopup, defaultPaymentType)
+      if (defaultPaymentType) {
+        calculatePaymentAmount(minTopup, defaultPaymentType)
+      }
     }
   }, [topupInfo, topupAmount, calculatePaymentAmount])
 
@@ -176,7 +179,10 @@ export function Wallet(props: WalletProps) {
 
     try {
       // Validate minimum topup
-      const minTopup = getMinTopupAmount(topupInfo)
+      const minTopup = Math.max(
+        getMinTopupAmount(topupInfo),
+        method.min_topup || 0
+      )
       if (topupAmount < minTopup) {
         return
       }
@@ -228,11 +234,6 @@ export function Wallet(props: WalletProps) {
       await fetchUser()
     }
   }
-
-  // Handle the "Pay Now" button in the simple amount-card layout
-  const handlePayNow = useCallback(() => {
-    startAlipayPayment()
-  }, [startAlipayPayment])
 
   // Handle redemption
   const handleRedeem = async () => {
@@ -341,8 +342,6 @@ export function Wallet(props: WalletProps) {
                   enableWaffoPancakeTopup={
                     topupInfo?.enable_waffo_pancake_topup
                   }
-                  onPayNow={handlePayNow}
-                  payNowLoading={alipayProcessing}
                 />
               </div>
 
