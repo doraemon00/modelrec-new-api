@@ -16,26 +16,25 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { useSearch } from '@tanstack/react-router'
+import type { RegisterFormValues } from '../constants'
+import type { HumanVerificationPayload, RegisterPayload } from '../types'
 
-import { useStatus } from '@/hooks/use-status'
+export function buildRegisterPayload(
+  values: RegisterFormValues,
+  affiliateCode: string | null | undefined,
+  verification: HumanVerificationPayload
+): RegisterPayload {
+  const identity =
+    values.registrationMethod === 'email'
+      ? { email: values.email.trim() }
+      : { phone: values.phone.trim() }
 
-import { AuthLayout } from '../auth-layout'
-import { UserAuthForm } from './components/user-auth-form'
-
-export function SignIn() {
-  const { redirect } = useSearch({ from: '/(auth)/sign-in' })
-  const { status } = useStatus()
-  const showRegister =
-    !status?.self_use_mode_enabled &&
-    status?.register_enabled !== false &&
-    status?.password_register_enabled !== false
-
-  return (
-    <AuthLayout activeView='sign-in' showRegister={showRegister}>
-      <div className='w-full'>
-        <UserAuthForm redirectTo={redirect} />
-      </div>
-    </AuthLayout>
-  )
+  return {
+    username: values.username.trim(),
+    password: values.password,
+    verification_code: values.verification_code.trim(),
+    aff_code: affiliateCode || undefined,
+    ...identity,
+    ...verification,
+  }
 }

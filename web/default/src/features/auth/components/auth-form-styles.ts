@@ -16,26 +16,5 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { useSearch } from '@tanstack/react-router'
-
-import { useStatus } from '@/hooks/use-status'
-
-import { AuthLayout } from '../auth-layout'
-import { UserAuthForm } from './components/user-auth-form'
-
-export function SignIn() {
-  const { redirect } = useSearch({ from: '/(auth)/sign-in' })
-  const { status } = useStatus()
-  const showRegister =
-    !status?.self_use_mode_enabled &&
-    status?.register_enabled !== false &&
-    status?.password_register_enabled !== false
-
-  return (
-    <AuthLayout activeView='sign-in' showRegister={showRegister}>
-      <div className='w-full'>
-        <UserAuthForm redirectTo={redirect} />
-      </div>
-    </AuthLayout>
-  )
-}
+export const AUTH_INPUT_CLASS =
+  'sf-auth-input h-14 rounded-2xl border-transparent bg-[#f5f7f8] pl-12 text-[15px] shadow-none transition-[border-color,box-shadow,background-color] duration-200 hover:bg-[#f1f4f4] focus-visible:border-[#ffb45e] focus-visible:bg-white focus-visible:ring-[#ff8a00]/12 dark:bg-white/6 dark:hover:bg-white/9 dark:focus-visible:bg-white/10'
