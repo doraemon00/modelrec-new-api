@@ -16,10 +16,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { createFileRoute } from '@tanstack/react-router'
+export function getPricingSearch(query: string): { search?: string } {
+  const search = query.trim()
+  return search ? { search } : {}
+}
 
-import { Home } from '@/features/home'
+export function getApiKeyDestination(isAuthenticated: boolean) {
+  if (isAuthenticated) {
+    return { to: '/keys' as const }
+  }
 
-export const Route = createFileRoute('/')({
-  component: Home,
-})
+  return {
+    to: '/sign-in' as const,
+    search: { redirect: '/keys' },
+  }
+}
