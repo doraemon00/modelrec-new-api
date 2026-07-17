@@ -765,6 +765,16 @@ For commercial licensing, please contact support@quantumnous.com
   display: flex;
 }
 
+.sf-public-mobile-actions {
+  display: flex;
+}
+
+@media (min-width: 40rem) {
+  .sf-public-mobile-actions {
+    display: none !important;
+  }
+}
+
 @media (min-width: 64rem) {
   .sf-home-menu-trigger {
     display: none !important;
