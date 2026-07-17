@@ -23,9 +23,9 @@ The backend already exposes the authoritative payment state:
 - configured amount presets and discounts;
 - `payment_compliance_confirmed`.
 
-The Rust Alipay service already reads `MinTopUp` when creating an order, but it
-does not currently reject order creation when payment compliance is disabled or
-Alipay is absent from `PayMethods`.
+The custom Rust Alipay endpoint is outside this restoration slice. It already
+reads `MinTopUp`, but server-side protection against direct calls that bypass
+the frontend remains a separate security-hardening task.
 
 ## Upstream Comparison
 
@@ -54,9 +54,7 @@ Upstream references:
    availability, methods, amount presets, discounts, and minimum amounts.
 2. Preserve direct Alipay payment when, and only when, Alipay is configured and
    payment compliance is confirmed.
-3. Enforce the same availability rule in the Rust payment service so direct API
-   calls cannot bypass the UI.
-4. Keep the existing wallet visual language where it does not conflict with the
+3. Keep the existing wallet visual language where it does not conflict with the
    configuration-driven behavior.
 
 ## Non-goals
@@ -65,6 +63,8 @@ Upstream references:
 - Alipay callback amount comparison and callback response formatting.
 - Redesigning the system-settings payment editor.
 - Adding a new standalone `DirectAlipayEnabled` option in this slice.
+- Modifying `model-hub-rs` or adding server-side guards to its direct Alipay
+  endpoint.
 
 ## Authoritative Availability Rules
 
@@ -79,14 +79,6 @@ The wallet derives visible payment methods from `topupInfo`:
 - Stripe, Creem, Waffo, and Waffo Pancake continue to use their existing
   backend availability flags.
 - The frontend never inserts a missing payment method.
-
-The Rust Alipay order service repeats the critical rules before creating an
-order:
-
-1. `PaymentComplianceConfirmed` must be true.
-2. The `PayMethods` option must contain `type: "alipay"`.
-3. The amount must meet the existing dynamic `MinTopUp` check.
-4. The runtime Alipay credentials must pass the existing client construction.
 
 ## Frontend Design
 
@@ -119,27 +111,20 @@ Restore the initial amount and selected preset to an unselected state. Once
 `topupInfo` loads, initialize the amount from the dynamic minimum and calculate
 the payable amount using the current default configured method.
 
-## Backend Design
+## Backend Boundary
 
-Extend `system-service::OptionService` with a narrowly scoped payment-method
-lookup:
+The existing Go `GetTopUpInfo` implementation already matches the upstream
+configuration contract and requires no production change in this slice. It
+continues to suppress payment methods and gateway flags when compliance is not
+confirmed, and to expose `MinTopUp`, configured presets, discounts, and payment
+methods when enabled.
 
-- add the `PayMethods` option key constant;
-- parse the stored JSON array defensively;
-- expose a method that reports whether a requested payment type is configured;
-- treat a missing, malformed, or empty value as disabled rather than enabled.
-
-At the start of `AlipayPayService::create_pay_order`, reject the request before
-creating a payment order unless compliance is confirmed and Alipay is present
-in `PayMethods`. The existing dynamic minimum calculation remains the amount
-authority.
+The direct Rust Alipay endpoint remains unchanged. Preventing a caller from
+invoking that endpoint directly while frontend payment is disabled is an
+explicit follow-up security task.
 
 ## Error Handling
 
-- Configuration-disabled order creation returns a business/invalid-parameter
-  error and creates no local order.
-- Configuration read failures fail closed and surface an internal error.
-- Malformed `PayMethods` fails closed for Alipay availability.
 - Frontend fetch failure retains the existing loading/error behavior and must
   not reveal the hard-coded fallback.
 
@@ -155,20 +140,10 @@ Frontend regression coverage will verify:
 - method-specific minimums disable only the affected method;
 - configured Alipay still dispatches through the direct Alipay handler.
 
-Rust coverage will verify:
-
-- compliance disabled rejects Alipay order creation;
-- Alipay absent from `PayMethods` rejects order creation;
-- malformed/missing `PayMethods` fails closed;
-- configured Alipay proceeds to the existing amount and credential checks;
-- dynamic `MinTopUp` remains enforced.
-
-Browser verification will cover both system settings and wallet behavior:
-
-1. payment compliance disabled;
-2. compliance enabled but Alipay removed;
-3. Alipay configured with a changed global minimum and changed presets;
-4. a custom method-specific minimum.
+Automated tests will cover disabled compliance, Alipay removed, direct Alipay
+with a changed global minimum and presets, and method-specific minimums.
+Browser verification will exercise the current payment-disabled wallet state
+without mutating compliance or real gateway settings.
 
 ## Rollout Boundary
 
