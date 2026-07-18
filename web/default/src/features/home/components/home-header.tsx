@@ -20,7 +20,6 @@ import {
   ArrowLeft01Icon,
   Cancel01Icon,
   Menu01Icon,
-  UserCircleIcon,
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Link } from '@tanstack/react-router'
@@ -141,10 +140,9 @@ export function HomeHeader() {
             ) : (
               <Link
                 to='/sign-in'
-                aria-label={t('Sign in')}
-                className='flex size-9 items-center justify-center rounded-full bg-[#eef2ff] text-[#4338ca] transition-transform hover:scale-105'
+                className='inline-flex h-9 items-center justify-center rounded-lg border border-[#d8d9dd] bg-white px-5 text-sm font-semibold text-[#374151] transition-colors hover:border-[#ff8700] hover:text-[#ff8700] dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:border-[#ff8700] dark:hover:text-[#ff9f33]'
               >
-                <HugeiconsIcon icon={UserCircleIcon} className='size-6' />
+                {t('Sign in')}
               </Link>
             )}
           </div>
