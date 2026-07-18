@@ -132,7 +132,7 @@ export function HomeFooter() {
               © {currentYear} {displayName}. {t('footer.defaultCopyright')}
             </span>
           )}
-          <span aria-hidden='true'>·</span>
+          {/* <span aria-hidden='true'>·</span>
           <a
             href='https://github.com/QuantumNous/new-api'
             target='_blank'
@@ -140,7 +140,7 @@ export function HomeFooter() {
             className='transition-colors hover:text-white'
           >
             new-api / QuantumNous
-          </a>
+          </a> */}
 
           {/* Footer policy and language shortcuts are temporarily hidden. */}
         </div>
