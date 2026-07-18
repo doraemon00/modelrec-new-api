@@ -1911,7 +1911,7 @@
     "footer.copyright": "版权所有。",
     "FAQ updated. Click \"Save Settings\" to apply.": "FAQ 已更新。点击 \"保存设置\" 以应用。",
     "FastGPT": "FastGPT",
-    "Feature in development": "功能开发中",
+    "Feature in development": "待开发",
     "feature.anyModelApi.title": "适用于任何模型的 API",
     "feature.anyModelApi.desc": "兼容所有主流 AI 模型服务商",
     "feature.billingRateLimit.title": "统一计费与速率限制",

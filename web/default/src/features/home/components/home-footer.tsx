@@ -18,6 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 
 import { useSystemConfig } from '@/hooks/use-system-config'
 
@@ -37,10 +38,10 @@ const FOOTER_COLUMNS = [
       { label: 'Developer Documentation', to: '/docs' },
       {
         label: 'Community Forum',
-        href: 'https://docs.newapi.pro/support/community-interaction/',
+        status: 'comingSoon',
       },
-      { label: 'API Reference', href: 'https://docs.newapi.pro/api/' },
-      { label: 'Changelog', href: 'https://docs.newapi.pro/' },
+      { label: 'API Reference', status: 'comingSoon' },
+      { label: 'Changelog', status: 'comingSoon' },
     ],
   },
   {
@@ -48,11 +49,11 @@ const FOOTER_COLUMNS = [
     links: [
       {
         label: 'Contact Us',
-        href: 'https://docs.newapi.pro/support/community-interaction/',
+        status: 'comingSoon',
       },
       {
         label: 'Service Status',
-        href: 'https://github.com/QuantumNous/new-api/issues',
+        status: 'comingSoon',
       },
       { label: 'Privacy Policy', to: '/privacy-policy' },
       { label: 'Terms of Service', to: '/user-agreement' },
@@ -96,15 +97,14 @@ export function HomeFooter() {
               <ul className='mt-6 space-y-4'>
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    {'href' in link ? (
-                      <a
-                        href={link.href}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        className='text-sm transition-colors hover:text-white'
+                    {'status' in link ? (
+                      <button
+                        type='button'
+                        onClick={() => toast.info(t('Feature in development'))}
+                        className='cursor-pointer text-sm transition-colors hover:text-white'
                       >
                         {t(link.label)}
-                      </a>
+                      </button>
                     ) : (
                       <Link
                         to={link.to}
