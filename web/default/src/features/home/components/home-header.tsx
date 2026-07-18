@@ -17,7 +17,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import {
-  ArrowLeft01Icon,
   Cancel01Icon,
   Menu01Icon,
 } from '@hugeicons/core-free-icons'
@@ -27,6 +26,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ProfileDropdown } from '@/components/profile-dropdown'
+import { HeaderLogo } from '@/components/layout'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { useTopNavLinks } from '@/hooks/use-top-nav-links'
 import { formatQuota } from '@/lib/format'
@@ -38,7 +38,7 @@ import { HomeModelSearch } from './home-model-search'
 export function HomeHeader() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { t } = useTranslation()
-  const { systemName } = useSystemConfig()
+  const { systemName, logo, loading, logoLoaded } = useSystemConfig()
   const { auth } = useAuthStore()
   const navLinks = useTopNavLinks()
   const user = auth.user
@@ -50,29 +50,21 @@ export function HomeHeader() {
     }
   }, [mobileOpen])
 
-  const goBack = () => {
-    if (window.history.length > 1) {
-      window.history.back()
-    }
-  }
-
   return (
     <>
       <header className='sticky top-0 z-50 h-[var(--header-height,4rem)] sf-header-transparent backdrop-blur-xl'>
         <nav className='flex h-full items-center gap-8 px-6'>
           <div className='flex shrink-0 items-center gap-1.5'>
-            <button
-              type='button'
-              onClick={goBack}
-              className='dark:text-foreground flex size-6 items-center justify-center rounded-md text-[#111827] transition-colors hover:bg-black/5 dark:hover:bg-white/10'
-              aria-label={t('Back')}
-            >
-              <HugeiconsIcon icon={ArrowLeft01Icon} className='size-4' />
-            </button>
             <Link
               to='/'
-              className='text-lg font-bold tracking-tight text-[#ff8700]'
+              className='flex items-center gap-2 text-lg font-bold tracking-tight text-[#ff8700]'
             >
+              <HeaderLogo
+                src={logo}
+                loading={loading}
+                logoLoaded={logoLoaded}
+                className='size-7 rounded-lg object-contain'
+              />
               {systemName || t('AI Routing')}
             </Link>
           </div>
